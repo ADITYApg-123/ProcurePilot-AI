@@ -82,9 +82,13 @@
   - Built Pydantic schemas (`quotation.py`, `analysis.py`)
   - Stubbed API routes (`upload.py`, `jobs.py`, `analysis.py`, `copilot.py`)
   - Created basic async `job_manager.py` for MVP
+- [x] Generated 3 realistic vendor quotation PDFs (Apex, Beta, CoreDrive) and ground truth JSON
+- [x] Built Vision Extraction pipeline using Gemini 2.5 Flash and Pydantic validation
+- [x] Tested extraction successfully (handles complex PDF layout & validation natively)
 
 **Current status:** 
-🟡 **Phase 1: Proof of Feasibility** — Backend skeleton established. Next steps are virtual env setup, getting API key, and PDF extraction pipeline.
+🟢 **Phase 1: Proof of Feasibility Complete.** The PDF → JSON pipeline is working reliably.
+🟡 **Phase 2: Core Intelligence Pipeline** — Next is building the Deterministic Analysis Engine.
 
 ---
 
@@ -101,9 +105,9 @@
    - [x] Initialize FastAPI project structure
    - [x] Create sample vendor quotation PDFs (3 vendors — industrial motors)
    - [x] Create ground truth JSON for the sample PDFs
-   - [ ] Build PDF → Vision Extraction → Structured JSON pipeline
-   - [ ] Build Pydantic validation layer
-   - [ ] Test extraction accuracy against ground truth
+   - [x] Build PDF → Vision Extraction → Structured JSON pipeline
+   - [x] Build Pydantic validation layer
+   - [x] Test extraction accuracy against ground truth
 
 3. **Deterministic Analysis Engine**
    - [ ] Vendor comparison logic
