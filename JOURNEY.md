@@ -76,22 +76,29 @@
 - [x] Created `dev` branch and pushed to remote
 - [x] Currently on `dev` branch — ready to build
 - [x] Created this Journey file
+- [x] Verified Dev Environment (Node v20, Python 3.12, npm, pip, git)
+- [x] Initialized FastAPI project structure (Backend Foundation)
+  - Created `requirements.txt` and `.env.example`
+  - Built Pydantic schemas (`quotation.py`, `analysis.py`)
+  - Stubbed API routes (`upload.py`, `jobs.py`, `analysis.py`, `copilot.py`)
+  - Created basic async `job_manager.py` for MVP
 
 **Current status:** 
-🟡 **Pre-development** — Repo set up, docs organized, decisions locked in. Dev environment not yet configured.
+🟡 **Phase 1: Proof of Feasibility** — Backend skeleton established. Next steps are virtual env setup, getting API key, and PDF extraction pipeline.
 
 ---
 
 ## What's Next
 
 1. **Dev Environment Setup**
-   - [ ] Install/verify Node.js (v18+)
-   - [ ] Install/verify Python (3.10+)
+   - [x] Install/verify Node.js (v18+)
+   - [x] Install/verify Python (3.10+)
+   - [ ] Create Python virtual environment and install backend dependencies
    - [ ] Get Gemini API key from Google AI Studio
    - [ ] Set up Supabase project (later — not needed for local dev)
 
 2. **Backend Foundation (Phase 1 — Proof of Feasibility)**
-   - [ ] Initialize FastAPI project structure
+   - [x] Initialize FastAPI project structure
    - [ ] Create sample vendor quotation PDFs (3 vendors — industrial motors)
    - [ ] Create ground truth JSON for the sample PDFs
    - [ ] Build PDF → Vision Extraction → Structured JSON pipeline
