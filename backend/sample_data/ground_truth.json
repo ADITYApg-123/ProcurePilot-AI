@@ -1,0 +1,101 @@
+[
+    {
+        "vendor_name": "Apex Industrial Motors",
+        "vendor_contact": "sales@apexmotors.in | +91 98765 43210",
+        "vendor_address": "Plot 45, Phase 2, Peenya Industrial Area, Bengaluru - 560058",
+        "quotation_number": "APEX/2026/001",
+        "quotation_date": "2026-06-10",
+        "validity_period": "30 Days",
+        "items": [
+            {
+                "product_name": "Heavy Duty Induction Motor",
+                "specifications": "75 kW, 415V, 1440 RPM, IE3 Efficiency",
+                "quantity": 5,
+                "unit_price": 285000.0,
+                "total_price": 1425000.0
+            },
+            {
+                "product_name": "VFD Controller",
+                "specifications": "90 kW, 3-Phase Variable Frequency Drive",
+                "quantity": 5,
+                "unit_price": 65000.0,
+                "total_price": 325000.0
+            }
+        ],
+        "grand_total": 2065000.0,
+        "tax_percentage": 18.0,
+        "tax_amount": 315000.0,
+        "warranty_months": 36,
+        "warranty_terms": "Extended warranty covers all parts.",
+        "delivery_days": 10,
+        "delivery_terms": "Includes free installation and alignment onsite.",
+        "payment_terms": "30% Advance, 70% against delivery",
+        "special_conditions": "Includes free installation and alignment onsite. Extended warranty covers all parts."
+    },
+    {
+        "vendor_name": "Beta Dynamics Engineering",
+        "vendor_contact": "quotes@betadynamics.com | +91 88776 65544",
+        "vendor_address": "Block C, MIDC, Andheri East, Mumbai - 400093",
+        "quotation_number": "BDE-QT-992",
+        "quotation_date": "2026-06-09",
+        "validity_period": "15 Days",
+        "items": [
+            {
+                "product_name": "IE3 Induction Motor",
+                "specifications": "75 kW, 415V, 1500 RPM",
+                "quantity": 5,
+                "unit_price": 255000.0,
+                "total_price": 1275000.0
+            },
+            {
+                "product_name": "AC Drive Unit",
+                "specifications": "90 kW Rating, IP55 Enclosure",
+                "quantity": 5,
+                "unit_price": 55000.0,
+                "total_price": 275000.0
+            }
+        ],
+        "grand_total": 1829000.0,
+        "tax_percentage": 18.0,
+        "tax_amount": 279000.0,
+        "warranty_months": 12,
+        "warranty_terms": null,
+        "delivery_days": 15,
+        "delivery_terms": null,
+        "payment_terms": "50% Advance, 50% Post-delivery (30 days credit)",
+        "special_conditions": "Installation charges extra at actuals."
+    },
+    {
+        "vendor_name": "CoreDrive Solutions Ltd",
+        "vendor_contact": "sales@coredrive.co.in | 0124-4567890",
+        "vendor_address": "Sector 14, IMT Manesar, Gurugram - 122050",
+        "quotation_number": "CDS/QT/2026/455",
+        "quotation_date": "2026-06-08",
+        "validity_period": "60 Days",
+        "items": [
+            {
+                "product_name": "Standard Squirrel Cage Motor",
+                "specifications": "75 kW, 415V, 3-phase, 1440 RPM",
+                "quantity": 5,
+                "unit_price": 210000.0,
+                "total_price": 1050000.0
+            },
+            {
+                "product_name": "VFD Module",
+                "specifications": "90 kW compatible VFD",
+                "quantity": 5,
+                "unit_price": 48000.0,
+                "total_price": 240000.0
+            }
+        ],
+        "grand_total": 1522200.0,
+        "tax_percentage": 18.0,
+        "tax_amount": 232200.0,
+        "warranty_months": 12,
+        "warranty_terms": null,
+        "delivery_days": 35,
+        "delivery_terms": null,
+        "payment_terms": "100% Advance Payment",
+        "special_conditions": "Delivery timeline is tentative and subject to supply chain constraints."
+    }
+]

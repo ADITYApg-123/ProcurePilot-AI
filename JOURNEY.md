@@ -93,14 +93,14 @@
 1. **Dev Environment Setup**
    - [x] Install/verify Node.js (v18+)
    - [x] Install/verify Python (3.10+)
-   - [ ] Create Python virtual environment and install backend dependencies
-   - [ ] Get Gemini API key from Google AI Studio
+   - [x] Create Python virtual environment and install backend dependencies
+   - [x] Get Gemini API key from Google AI Studio
    - [ ] Set up Supabase project (later — not needed for local dev)
 
 2. **Backend Foundation (Phase 1 — Proof of Feasibility)**
    - [x] Initialize FastAPI project structure
-   - [ ] Create sample vendor quotation PDFs (3 vendors — industrial motors)
-   - [ ] Create ground truth JSON for the sample PDFs
+   - [x] Create sample vendor quotation PDFs (3 vendors — industrial motors)
+   - [x] Create ground truth JSON for the sample PDFs
    - [ ] Build PDF → Vision Extraction → Structured JSON pipeline
    - [ ] Build Pydantic validation layer
    - [ ] Test extraction accuracy against ground truth
