@@ -87,8 +87,9 @@
 - [x] Tested extraction successfully (handles complex PDF layout & validation natively)
 
 **Current status:** 
-🟢 **Phase 1: Proof of Feasibility Complete.** The PDF → JSON pipeline is working reliably.
-🟡 **Phase 2: Core Intelligence Pipeline** — Next is building the Deterministic Analysis Engine.
+🟢 **Phase 2: Core Intelligence Pipeline Complete.** The Deterministic Analysis engine works.
+🟢 **Phase 3: Procurement Copilot Complete.** AI chat and negotiation generation works.
+🟡 **Phase 4: Frontend & User Experience** — Next is building the Next.js frontend.
 
 ---
 
@@ -116,10 +117,10 @@
    - [x] Risk detection (threshold-based)
 
 4. **Procurement Copilot**
-   - [ ] Recommendation generation
-   - [ ] Trade-off reasoning
-   - [ ] Negotiation strategy + email generation
-   - [ ] Procurement Q&A
+   - [x] Recommendation generation
+   - [x] Trade-off reasoning
+   - [x] Negotiation strategy + email generation
+   - [x] Procurement Q&A
 
 5. **Frontend**
    - [ ] Initialize Next.js project
