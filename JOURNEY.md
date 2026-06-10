@@ -110,10 +110,10 @@
    - [x] Test extraction accuracy against ground truth
 
 3. **Deterministic Analysis Engine**
-   - [ ] Vendor comparison logic
-   - [ ] Procurement scoring engine (configurable weights)
-   - [ ] Savings calculator
-   - [ ] Risk detection (threshold-based)
+   - [x] Vendor comparison logic
+   - [x] Procurement scoring engine (configurable weights)
+   - [x] Savings calculator
+   - [x] Risk detection (threshold-based)
 
 4. **Procurement Copilot**
    - [ ] Recommendation generation
