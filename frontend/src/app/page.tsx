@@ -26,7 +26,7 @@ export default function Home() {
             setAnalysis(res.result);
             clearInterval(interval);
           } else if (res.status === 'FAILED') {
-            setUploadError(res.message);
+            setUploadError(res.progress_message);
             clearInterval(interval);
           }
         } catch (err) {
