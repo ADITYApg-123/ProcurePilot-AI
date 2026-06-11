@@ -2,6 +2,12 @@ from io import BytesIO
 from fpdf import FPDF
 from app.schemas.analysis import ProcurementAnalysis
 
+def safe_text(text: str) -> str:
+    if not text:
+        return ""
+    return str(text).encode('latin-1', 'replace').decode('latin-1')
+
+
 class PDFReportGenerator(FPDF):
     def header(self):
         # Arial bold 15
@@ -24,14 +30,14 @@ class PDFReportGenerator(FPDF):
         # Background color
         self.set_fill_color(200, 220, 255)
         # Title
-        self.cell(0, 10, title, 0, 1, "L", 1)
+        self.cell(0, 10, safe_text(title), 0, 1, "L", 1)
         self.ln(4)
 
     def chapter_body(self, body):
         # Times 12
         self.set_font("Times", "", 12)
         # Output justified text
-        self.multi_cell(0, 10, body)
+        self.multi_cell(0, 10, safe_text(body))
         self.ln()
 
 def generate_report(analysis: ProcurementAnalysis) -> bytes:
@@ -56,7 +62,7 @@ def generate_report(analysis: ProcurementAnalysis) -> bytes:
     pdf.set_font("Times", "", 12)
     for score in analysis.vendor_scores:
         pdf.cell(20, 10, str(score.rank), border=1, align="C")
-        pdf.cell(50, 10, score.vendor_name, border=1, align="C")
+        pdf.cell(50, 10, safe_text(score.vendor_name), border=1, align="C")
         pdf.cell(40, 10, str(score.cost_score), border=1, align="C")
         pdf.cell(40, 10, str(score.warranty_score), border=1, align="C")
         pdf.cell(40, 10, str(round(score.overall_score, 1)), border=1, align="C")
