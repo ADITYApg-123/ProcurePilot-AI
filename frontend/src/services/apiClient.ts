@@ -1,6 +1,6 @@
 import { JobResponse, CopilotResponse } from './types';
 
-const API_BASE = 'http://localhost:8000/api';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
 
 export const apiClient = {
   async uploadFiles(files: File[]): Promise<{ job_id: string; message: string }> {
