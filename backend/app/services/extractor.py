@@ -6,6 +6,8 @@ Uses Gemini 2.5 Flash to extract structured data from vendor quotations.
 import os
 from google import genai
 from google.genai import types
+from google.genai.errors import APIError
+from tenacity import retry, wait_exponential, stop_after_attempt, retry_if_exception_type
 from app.config import settings
 from app.schemas.quotation import VendorQuotation, ExtractionResult
 
@@ -44,33 +46,35 @@ class DocumentExtractor:
         Pay special attention to the pricing, tax, warranty, and delivery terms.
         """
 
-        retries = 0
-        while retries < settings.MAX_EXTRACTION_RETRIES:
-            try:
-                response = client.models.generate_content(
-                    model=settings.GEMINI_MODEL,
-                    contents=[uploaded_file, prompt],
-                    config=types.GenerateContentConfig(
-                        response_mime_type="application/json",
-                        response_schema=VendorQuotation,
-                        temperature=0.1,  # Low temperature for deterministic extraction
-                    ),
-                )
-                
-                # The response.text is guaranteed to match our Pydantic schema
-                # We parse it directly into our Pydantic model
-                quotation = VendorQuotation.model_validate_json(response.text)
-                
-                return ExtractionResult(
-                    success=True,
-                    quotation=quotation,
-                    retries_used=retries,
-                    source_file=pdf_path
-                )
-                
-            except Exception as e:
-                retries += 1
-                print(f"Extraction attempt {retries} failed: {str(e)}")
+        @retry(
+            wait=wait_exponential(multiplier=2, min=4, max=60),
+            stop=stop_after_attempt(settings.MAX_EXTRACTION_RETRIES),
+            retry=retry_if_exception_type(APIError)
+        )
+        def _generate():
+            return client.models.generate_content(
+                model=settings.GEMINI_MODEL,
+                contents=[uploaded_file, prompt],
+                config=types.GenerateContentConfig(
+                    response_mime_type="application/json",
+                    response_schema=VendorQuotation,
+                    temperature=0.1,
+                ),
+            )
+
+        try:
+            response = _generate()
+            quotation = VendorQuotation.model_validate_json(response.text)
+            
+            return ExtractionResult(
+                success=True,
+                quotation=quotation,
+                retries_used=0,
+                source_file=pdf_path
+            )
+            
+        except Exception as e:
+            print(f"Extraction failed: {str(e)}")
                 
         return ExtractionResult(
             success=False,
