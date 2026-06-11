@@ -7,6 +7,8 @@ and grounded reasoning on top of the deterministic analysis data.
 import json
 from google import genai
 from google.genai import types
+from google.genai.errors import APIError
+from tenacity import retry, wait_exponential, stop_after_attempt, retry_if_exception_type
 from app.config import settings
 from app.schemas.analysis import ProcurementAnalysis, CopilotResponse
 
@@ -36,8 +38,13 @@ class CopilotEngine:
         {json.dumps(context_data, indent=2)}
         """
         
-        try:
-            response = client.models.generate_content(
+        @retry(
+            wait=wait_exponential(multiplier=1, min=2, max=10),
+            stop=stop_after_attempt(3),
+            retry=retry_if_exception_type(APIError)
+        )
+        def _generate_chat():
+            return client.models.generate_content(
                 model=settings.GEMINI_MODEL,
                 contents=[user_message],
                 config=types.GenerateContentConfig(
@@ -45,6 +52,9 @@ class CopilotEngine:
                     temperature=0.3,
                 )
             )
+
+        try:
+            response = _generate_chat()
             
             # Identify sources based on which vendors are mentioned in the response
             sources = []
@@ -85,14 +95,22 @@ class CopilotEngine:
         3. Email Draft (A professional email to the vendor)
         """
         
-        try:
-            response = client.models.generate_content(
+        @retry(
+            wait=wait_exponential(multiplier=1, min=2, max=10),
+            stop=stop_after_attempt(3),
+            retry=retry_if_exception_type(APIError)
+        )
+        def _generate_strategy():
+            return client.models.generate_content(
                 model=settings.GEMINI_MODEL,
                 contents=[prompt],
                 config=types.GenerateContentConfig(
                     temperature=0.5, # Slightly more creative for email drafting
                 )
             )
+
+        try:
+            response = _generate_strategy()
             return response.text
         except Exception as e:
             return f"Failed to generate negotiation strategy: {str(e)}"

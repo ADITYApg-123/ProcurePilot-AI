@@ -1,13 +1,13 @@
 import { JobResponse, CopilotResponse } from './types';
 
-const API_BASE = 'http://localhost:8000/api/v1';
+const API_BASE = 'http://localhost:8000/api';
 
 export const apiClient = {
   async uploadFiles(files: File[]): Promise<{ job_id: string; message: string }> {
     const formData = new FormData();
     files.forEach((file) => formData.append('files', file));
 
-    const response = await fetch(`${API_BASE}/upload/quotations`, {
+    const response = await fetch(`${API_BASE}/upload`, {
       method: 'POST',
       body: formData,
     });
@@ -30,12 +30,12 @@ export const apiClient = {
   },
 
   async askCopilot(jobId: string, message: string): Promise<CopilotResponse> {
-    const response = await fetch(`${API_BASE}/copilot/chat/${jobId}`, {
+    const response = await fetch(`${API_BASE}/copilot/chat`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ message }),
+      body: JSON.stringify({ job_id: jobId, message }),
     });
 
     if (!response.ok) {
