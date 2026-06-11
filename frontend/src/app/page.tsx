@@ -73,7 +73,7 @@ export default function Home() {
         ) : (
           <div className="results-view animate-fade-in">
             <div className="main-content">
-              <AnalysisDashboard analysis={analysis} />
+              <AnalysisDashboard jobId={jobId!} analysis={analysis} />
             </div>
             <div className="sidebar-content">
               <CopilotChat jobId={jobId!} analysis={analysis} />

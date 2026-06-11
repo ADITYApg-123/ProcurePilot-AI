@@ -1,17 +1,32 @@
 "use client";
 
 import React from 'react';
-import { Trophy, AlertTriangle, TrendingDown, DollarSign, Clock, ShieldCheck } from 'lucide-react';
+import { Trophy, AlertTriangle, TrendingDown, DollarSign, Clock, ShieldCheck, Download } from 'lucide-react';
 import { ProcurementAnalysis, RiskFlag } from '../services/types';
 import { Card } from './ui/Card';
 import { Badge } from './ui/Badge';
+import { apiClient } from '../services/apiClient';
 import './AnalysisDashboard.css';
 
 interface Props {
+  jobId: string;
   analysis: ProcurementAnalysis;
 }
 
-export function AnalysisDashboard({ analysis }: Props) {
+export function AnalysisDashboard({ jobId, analysis }: Props) {
+  const [isDownloading, setIsDownloading] = React.useState(false);
+
+  const handleDownload = async () => {
+    try {
+      setIsDownloading(true);
+      await apiClient.downloadReport(jobId);
+    } catch (err) {
+      console.error(err);
+      alert('Failed to download report.');
+    } finally {
+      setIsDownloading(false);
+    }
+  };
   const getBadgeVariant = (level: string) => {
     switch (level) {
       case 'RiskLevel.HIGH': return 'error';
@@ -34,6 +49,15 @@ export function AnalysisDashboard({ analysis }: Props) {
             <p>{analysis.recommendation_reason}</p>
           </div>
         </div>
+        <button 
+          className="btn-primary" 
+          style={{ marginTop: '20px' }}
+          onClick={handleDownload}
+          disabled={isDownloading}
+        >
+          <Download size={18} />
+          {isDownloading ? 'Generating...' : 'Download Executive PDF Report'}
+        </button>
       </Card>
 
       <div className="dashboard-grid">
