@@ -1,0 +1,131 @@
+"use client";
+
+import React, { useState, useCallback, useRef } from 'react';
+import { UploadCloud, File as FileIcon, X, CheckCircle, AlertCircle } from 'lucide-react';
+import { Card } from './ui/Card';
+import { Spinner } from './ui/Spinner';
+import './UploadWorkspace.css';
+
+interface UploadWorkspaceProps {
+  onUpload: (files: File[]) => Promise<void>;
+  isUploading: boolean;
+  error?: string | null;
+}
+
+export function UploadWorkspace({ onUpload, isUploading, error }: UploadWorkspaceProps) {
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleDrag = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.type === 'dragenter' || e.type === 'dragover') {
+      setIsDragging(true);
+    } else if (e.type === 'dragleave') {
+      setIsDragging(false);
+    }
+  }, []);
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+    
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      const files = Array.from(e.dataTransfer.files).filter(f => f.type === 'application/pdf');
+      setSelectedFiles(prev => [...prev, ...files]);
+    }
+  }, []);
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const files = Array.from(e.target.files).filter(f => f.type === 'application/pdf');
+      setSelectedFiles(prev => [...prev, ...files]);
+    }
+  };
+
+  const removeFile = (index: number) => {
+    setSelectedFiles(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const handleUploadClick = () => {
+    if (selectedFiles.length > 0) {
+      onUpload(selectedFiles);
+    }
+  };
+
+  return (
+    <Card className="upload-workspace animate-fade-in">
+      <div className="upload-header">
+        <h2>Procurement Workspace</h2>
+        <p>Upload vendor quotations (PDF) to begin deterministic analysis.</p>
+      </div>
+
+      <div 
+        className={`drop-zone ${isDragging ? 'dragging' : ''}`}
+        onDragEnter={handleDrag}
+        onDragLeave={handleDrag}
+        onDragOver={handleDrag}
+        onDrop={handleDrop}
+        onClick={() => fileInputRef.current?.click()}
+      >
+        <UploadCloud className="upload-icon" size={48} />
+        <h3>Drag & Drop Quotations Here</h3>
+        <p>or click to browse from your computer</p>
+        <input 
+          type="file" 
+          multiple 
+          accept=".pdf" 
+          ref={fileInputRef} 
+          onChange={handleFileSelect} 
+          style={{ display: 'none' }} 
+        />
+      </div>
+
+      {error && (
+        <div className="upload-error">
+          <AlertCircle size={20} />
+          <span>{error}</span>
+        </div>
+      )}
+
+      {selectedFiles.length > 0 && (
+        <div className="file-list-container">
+          <h4>Selected Files ({selectedFiles.length})</h4>
+          <ul className="file-list">
+            {selectedFiles.map((file, i) => (
+              <li key={i} className="file-item animate-fade-in">
+                <div className="file-info">
+                  <FileIcon size={20} className="file-icon-small" />
+                  <span className="file-name">{file.name}</span>
+                </div>
+                {!isUploading && (
+                  <button className="remove-btn" onClick={() => removeFile(i)}>
+                    <X size={18} />
+                  </button>
+                )}
+                {isUploading && <CheckCircle size={18} className="success-icon" />}
+              </li>
+            ))}
+          </ul>
+          
+          <button 
+            className="btn-primary upload-btn" 
+            onClick={handleUploadClick}
+            disabled={isUploading}
+          >
+            {isUploading ? (
+              <>
+                <Spinner size={18} />
+                Extracting Data...
+              </>
+            ) : (
+              'Analyze Quotations'
+            )}
+          </button>
+        </div>
+      )}
+    </Card>
+  );
+}

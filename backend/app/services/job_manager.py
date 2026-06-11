@@ -7,6 +7,8 @@ from typing import Dict, Optional, List
 from pydantic import BaseModel
 from app.schemas.analysis import JobStatus
 import asyncio
+from app.services.extractor import extractor
+from app.services.analysis_engine import analysis_engine
 
 
 class Job(BaseModel):
@@ -60,15 +62,27 @@ class JobManager:
         # 3. Analyze (Deterministic)
         
         self.update_job(job_id, JobStatus.EXTRACTING, "Extracting data from PDFs...")
-        await asyncio.sleep(2)
         
-        self.update_job(job_id, JobStatus.VALIDATING, "Validating commercial information...")
-        await asyncio.sleep(2)
-        
+        quotations = []
+        for path in self._jobs[job_id].file_paths:
+            result = extractor.extract_quotation(path)
+            if not result.success:
+                self.update_job(job_id, JobStatus.FAILED, f"Failed to extract {path}: {result.error}")
+                return
+            quotations.append(result.quotation)
+            
         self.update_job(job_id, JobStatus.ANALYZING, "Running deterministic analysis...")
-        await asyncio.sleep(2)
         
-        self.update_job(job_id, JobStatus.COMPLETED, "Analysis complete.", result={"stub": "result"})
+        try:
+            analysis_result = analysis_engine.analyze(quotations)
+            self.update_job(
+                job_id, 
+                JobStatus.COMPLETED, 
+                "Analysis complete.", 
+                result=analysis_result.model_dump()
+            )
+        except Exception as e:
+            self.update_job(job_id, JobStatus.FAILED, f"Analysis failed: {str(e)}")
 
 # Global singleton
 job_manager = JobManager()
