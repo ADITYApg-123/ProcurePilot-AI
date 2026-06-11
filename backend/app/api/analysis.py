@@ -42,7 +42,7 @@ def download_executive_report(job_id: str):
     pdf_bytes = generate_report(analysis)
     
     return Response(
-        content=pdf_bytes,
+        content=bytes(pdf_bytes),
         media_type="application/pdf",
         headers={
             "Content-Disposition": f"attachment; filename=ProcurePilot_Report_{job_id}.pdf"
