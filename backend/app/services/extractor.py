@@ -79,7 +79,7 @@ class DocumentExtractor:
         return ExtractionResult(
             success=False,
             error=f"Failed to extract valid data after {settings.MAX_EXTRACTION_RETRIES} attempts.",
-            retries_used=retries,
+            retries_used=settings.MAX_EXTRACTION_RETRIES,
             source_file=pdf_path
         )
 
