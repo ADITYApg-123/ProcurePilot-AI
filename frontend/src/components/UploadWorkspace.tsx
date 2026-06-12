@@ -62,13 +62,13 @@ export function UploadWorkspace({ onUpload, onLoadDemo, isUploading, error }: Up
         <span className="banner-icon">⚙️</span>
         <div className="banner-content">
           <strong>Deterministic-First Architecture</strong>
-          <p>Financial calculations and vendor scores are executed via pure Python math layers. Generative AI is strictly restricted to data extraction. No hallucinations in your procurement math.</p>
+          <p>✓ Financial math = Pure Python (zero AI) &nbsp;•&nbsp; ✓ AI = Data extraction only &nbsp;•&nbsp; ✓ No hallucinations in scores</p>
         </div>
       </div>
 
       <div className="upload-header">
         <h2>Procurement Workspace</h2>
-        <p>Upload vendor quotations (PDF) to begin deterministic analysis.</p>
+        <p className="hero-tagline">Compare vendor quotes in seconds. Math, not hallucinations.</p>
       </div>
 
       {onLoadDemo && (

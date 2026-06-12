@@ -19,6 +19,13 @@
   font-size: 1.1rem;
 }
 
+.upload-header .hero-tagline {
+  color: var(--text-primary);
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-top: 12px;
+}
+
 .drop-zone {
   border: 2px dashed var(--border-color);
   border-radius: 12px;
@@ -193,5 +200,5 @@
 .step { flex: 1; background: rgba(0,0,0,0.2); padding: 16px 12px; border-radius: 8px; text-align: center; border: 1px solid var(--border-color); }
 .step-number { width: 24px; height: 24px; background: var(--accent-primary); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 8px; font-size: 0.8rem; font-weight: bold; }
 .step strong { display: block; color: var(--text-primary); font-size: 0.9rem; margin-bottom: 4px; }
-.step span { display: block; color: var(--text-muted); font-size: 0.75rem; }
+.step span { display: block; color: var(--text-secondary); font-size: 0.85rem; }
 .step-arrow { color: var(--text-muted); font-weight: bold; }
