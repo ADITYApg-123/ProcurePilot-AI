@@ -36,6 +36,7 @@ export interface JobResponse {
   job_id: string;
   status: 'PENDING' | 'EXTRACTING' | 'VALIDATING' | 'ANALYZING' | 'COMPLETED' | 'FAILED';
   message: string;
+  progress_message?: string;
   result?: ProcurementAnalysis;
 }
 
