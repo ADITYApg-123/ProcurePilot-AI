@@ -98,9 +98,6 @@ export function CopilotChat({ jobId, analysis }: Props) {
 
   return (
     <div className="copilot-wrapper animate-fade-in">
-      <div className="section-header-banner ai-banner">
-        <h2>🤖 AI-Powered Insights <span className="subtitle">(Grounded on Deterministic Data)</span></h2>
-      </div>
       <Card className="copilot-container">
         <div className="copilot-header">
         <Bot size={24} className="text-accent" />

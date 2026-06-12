@@ -37,9 +37,6 @@ export function AnalysisDashboard({ jobId, analysis }: Props) {
 
   return (
     <div className="dashboard-container animate-fade-in">
-      <div className="section-header-banner">
-        <h2>📊 Deterministic Analysis <span className="subtitle">(Pure Math, Zero AI)</span></h2>
-      </div>
       
       {/* Recommended Vendor Hero */}
       <Card className="hero-card">
@@ -123,7 +120,7 @@ export function AnalysisDashboard({ jobId, analysis }: Props) {
                   <li key={i} className="risk-item">
                     <Badge variant={getBadgeVariant(risk.level)}>{risk.level}</Badge>
                     <div className="risk-details">
-                      <strong>{risk.vendor_name}</strong>
+                      <strong>Vendor: {risk.vendor_name}</strong>
                       <p>{risk.description}</p>
                     </div>
                   </li>
