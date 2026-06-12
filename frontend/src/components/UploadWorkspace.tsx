@@ -8,11 +8,12 @@ import './UploadWorkspace.css';
 
 interface UploadWorkspaceProps {
   onUpload: (files: File[]) => Promise<void>;
+  onLoadDemo?: () => void;
   isUploading: boolean;
   error?: string | null;
 }
 
-export function UploadWorkspace({ onUpload, isUploading, error }: UploadWorkspaceProps) {
+export function UploadWorkspace({ onUpload, onLoadDemo, isUploading, error }: UploadWorkspaceProps) {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -57,10 +58,29 @@ export function UploadWorkspace({ onUpload, isUploading, error }: UploadWorkspac
 
   return (
     <Card className="upload-workspace animate-fade-in">
+      <div className="architecture-banner">
+        <span className="banner-icon">⚙️</span>
+        <div className="banner-content">
+          <strong>Deterministic-First Architecture</strong>
+          <p>Financial calculations and vendor scores are executed via pure Python math layers. Generative AI is strictly restricted to data extraction. No hallucinations in your procurement math.</p>
+        </div>
+      </div>
+
       <div className="upload-header">
         <h2>Procurement Workspace</h2>
         <p>Upload vendor quotations (PDF) to begin deterministic analysis.</p>
       </div>
+
+      {onLoadDemo && (
+        <div className="demo-section animate-fade-in">
+          <button className="btn-demo" onClick={onLoadDemo} disabled={isUploading}>
+            <span className="fire-icon">🔥</span> Try Instant Demo (Load Pre-analyzed Sample Data)
+          </button>
+          <div className="demo-divider">
+            <span>OR UPLOAD YOUR OWN PDFs</span>
+          </div>
+        </div>
+      )}
 
       <div 
         className={`drop-zone ${isDragging ? 'dragging' : ''}`}
@@ -81,6 +101,35 @@ export function UploadWorkspace({ onUpload, isUploading, error }: UploadWorkspac
           onChange={handleFileSelect} 
           style={{ display: 'none' }} 
         />
+      </div>
+
+      <div className="how-it-works animate-fade-in">
+        <h4>How it Works</h4>
+        <div className="pipeline-steps">
+          <div className="step">
+            <div className="step-number">1</div>
+            <strong>Upload PDFs</strong>
+            <span>Vendor quotes</span>
+          </div>
+          <div className="step-arrow">→</div>
+          <div className="step">
+            <div className="step-number">2</div>
+            <strong>AI Extracts</strong>
+            <span>Structured data via Gemini Flash</span>
+          </div>
+          <div className="step-arrow">→</div>
+          <div className="step">
+            <div className="step-number">3</div>
+            <strong>Math Scores</strong>
+            <span>Pure Python logic</span>
+          </div>
+          <div className="step-arrow">→</div>
+          <div className="step">
+            <div className="step-number">4</div>
+            <strong>Copilot Advises</strong>
+            <span>Grounded reasoning</span>
+          </div>
+        </div>
       </div>
 
       {error && (

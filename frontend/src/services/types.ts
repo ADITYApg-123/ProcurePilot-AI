@@ -26,6 +26,7 @@ export interface ProcurementAnalysis {
   recommended_vendor: string;
   recommendation_reason: string;
   risk_flags: RiskFlag[];
+
   savings_opportunities: SavingsOpportunity[];
   cost_comparison: Record<string, number>;
   warranty_comparison: Record<string, number>;
@@ -35,8 +36,7 @@ export interface ProcurementAnalysis {
 export interface JobResponse {
   job_id: string;
   status: 'PENDING' | 'EXTRACTING' | 'VALIDATING' | 'ANALYZING' | 'COMPLETED' | 'FAILED';
-  message: string;
-  progress_message?: string;
+  progress_message: string;
   result?: ProcurementAnalysis;
 }
 

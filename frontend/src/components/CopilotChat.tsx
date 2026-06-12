@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, Bot, User, FileText } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
 import { Card } from './ui/Card';
 import { Spinner } from './ui/Spinner';
 import { apiClient } from '../services/apiClient';
@@ -96,8 +97,12 @@ export function CopilotChat({ jobId, analysis }: Props) {
   };
 
   return (
-    <Card className="copilot-container">
-      <div className="copilot-header">
+    <div className="copilot-wrapper animate-fade-in">
+      <div className="section-header-banner ai-banner">
+        <h2>🤖 AI-Powered Insights <span className="subtitle">(Grounded on Deterministic Data)</span></h2>
+      </div>
+      <Card className="copilot-container">
+        <div className="copilot-header">
         <Bot size={24} className="text-accent" />
         <h3>Procurement Copilot</h3>
       </div>
@@ -126,12 +131,7 @@ export function CopilotChat({ jobId, analysis }: Props) {
               {msg.role === 'assistant' ? <Bot size={20} /> : <User size={20} />}
             </div>
             <div className="message-content">
-              {msg.content.split('\n').map((line, i) => (
-                <span key={i}>
-                  {line}
-                  <br />
-                </span>
-              ))}
+              <ReactMarkdown>{msg.content}</ReactMarkdown>
               {msg.sources && msg.sources.length > 0 && (
                 <div className="message-sources">
                   <strong>Sources:</strong> {msg.sources.join(', ')}
@@ -168,6 +168,7 @@ export function CopilotChat({ jobId, analysis }: Props) {
           <Send size={20} />
         </button>
       </div>
-    </Card>
+      </Card>
+    </div>
   );
 }

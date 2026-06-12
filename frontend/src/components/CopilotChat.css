@@ -205,3 +205,23 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+/* Markdown styling */
+.message-content p {
+  margin: 0 0 8px 0;
+}
+.message-content p:last-child {
+  margin: 0;
+}
+.message-content ul, .message-content ol {
+  margin: 0 0 8px 0;
+  padding-left: 20px;
+}
+.message-content strong {
+  color: var(--accent-secondary);
+}
+
+.ai-banner {
+  background: linear-gradient(90deg, rgba(139, 92, 246, 0.1) 0%, rgba(6, 182, 212, 0.05) 100%);
+  border-left-color: var(--accent-secondary);
+}

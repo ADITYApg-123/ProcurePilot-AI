@@ -65,7 +65,8 @@ class JobManager:
         
         quotations = []
         for path in self._jobs[job_id].file_paths:
-            result = extractor.extract_quotation(path)
+            # Run the synchronous extraction in a separate thread so it doesn't block the event loop
+            result = await asyncio.to_thread(extractor.extract_quotation, path)
             if not result.success:
                 self.update_job(job_id, JobStatus.FAILED, f"Failed to extract {path}: {result.error}")
                 return

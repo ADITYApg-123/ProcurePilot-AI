@@ -1,0 +1,60 @@
+{
+  "vendor_scores": [
+    {
+      "vendor_name": "Apex Industrial Motors",
+      "cost_score": 0.0,
+      "warranty_score": 100.0,
+      "delivery_score": 100.0,
+      "overall_score": 60.0,
+      "rank": 1
+    },
+    {
+      "vendor_name": "Beta Dynamics Engineering",
+      "cost_score": 43.48,
+      "warranty_score": 0.0,
+      "delivery_score": 80.0,
+      "overall_score": 41.39,
+      "rank": 2
+    },
+    {
+      "vendor_name": "CoreDrive Solutions Ltd",
+      "cost_score": 100.0,
+      "warranty_score": 0.0,
+      "delivery_score": 0.0,
+      "overall_score": 40.0,
+      "rank": 3
+    }
+  ],
+  "recommended_vendor": "Apex Industrial Motors",
+  "recommendation_reason": "Apex Industrial Motors is recommended due to its excellent warranty coverage (36 months) and fast delivery timeline (10 days).",
+  "risk_flags": [
+    {
+      "vendor_name": "CoreDrive Solutions Ltd",
+      "risk_type": "LONG_DELIVERY",
+      "description": "Delivery time is extremely long (35 days).",
+      "level": "HIGH"
+    },
+    {
+      "vendor_name": "CoreDrive Solutions Ltd",
+      "risk_type": "PAYMENT_TERMS",
+      "description": "Vendor requires 100% advance payment, which poses a high financial risk.",
+      "level": "HIGH"
+    }
+  ],
+  "savings_opportunities": [],
+  "cost_comparison": {
+    "Apex Industrial Motors": 2065000.0,
+    "Beta Dynamics Engineering": 1829000.0,
+    "CoreDrive Solutions Ltd": 1522200.0
+  },
+  "warranty_comparison": {
+    "Apex Industrial Motors": 36,
+    "Beta Dynamics Engineering": 12,
+    "CoreDrive Solutions Ltd": 12
+  },
+  "delivery_comparison": {
+    "Apex Industrial Motors": 10,
+    "Beta Dynamics Engineering": 15,
+    "CoreDrive Solutions Ltd": 35
+  }
+}

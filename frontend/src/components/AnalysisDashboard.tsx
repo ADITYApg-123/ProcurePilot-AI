@@ -29,14 +29,17 @@ export function AnalysisDashboard({ jobId, analysis }: Props) {
   };
   const getBadgeVariant = (level: string) => {
     switch (level) {
-      case 'RiskLevel.HIGH': return 'error';
-      case 'RiskLevel.MEDIUM': return 'warning';
+      case 'HIGH': return 'error';
+      case 'MEDIUM': return 'warning';
       default: return 'info';
     }
   };
 
   return (
     <div className="dashboard-container animate-fade-in">
+      <div className="section-header-banner">
+        <h2>📊 Deterministic Analysis <span className="subtitle">(Pure Math, Zero AI)</span></h2>
+      </div>
       
       {/* Recommended Vendor Hero */}
       <Card className="hero-card">
@@ -85,17 +88,17 @@ export function AnalysisDashboard({ jobId, analysis }: Props) {
                     <div className="metric">
                       <DollarSign size={16} />
                       <span>₹{totalCost.toLocaleString()}</span>
-                      <small>Score: {score.cost_score}</small>
+                      <small>Cost Score: {score.cost_score}</small>
                     </div>
                     <div className="metric">
                       <ShieldCheck size={16} />
                       <span>{warranty} Months</span>
-                      <small>Score: {score.warranty_score}</small>
+                      <small>Warranty Score: {score.warranty_score}</small>
                     </div>
                     <div className="metric">
                       <Clock size={16} />
                       <span>{delivery} Days</span>
-                      <small>Score: {score.delivery_score}</small>
+                      <small>Delivery Score: {score.delivery_score}</small>
                     </div>
                   </div>
                 </Card>
@@ -118,7 +121,7 @@ export function AnalysisDashboard({ jobId, analysis }: Props) {
               <ul className="risk-list">
                 {analysis.risk_flags.map((risk, i) => (
                   <li key={i} className="risk-item">
-                    <Badge variant={getBadgeVariant(risk.level)}>{risk.level.split('.')[1]}</Badge>
+                    <Badge variant={getBadgeVariant(risk.level)}>{risk.level}</Badge>
                     <div className="risk-details">
                       <strong>{risk.vendor_name}</strong>
                       <p>{risk.description}</p>
@@ -137,7 +140,7 @@ export function AnalysisDashboard({ jobId, analysis }: Props) {
             </div>
             
             {analysis.savings_opportunities.length === 0 ? (
-              <p className="no-data">No cost savings available (recommended vendor is most expensive).</p>
+              <p className="no-data">The recommended vendor optimizes for warranty and delivery speed over unit cost.</p>
             ) : (
               <ul className="savings-list">
                 {analysis.savings_opportunities.map((saving, i) => (

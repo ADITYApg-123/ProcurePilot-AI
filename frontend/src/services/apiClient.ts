@@ -3,6 +3,11 @@ import { JobResponse, CopilotResponse } from './types';
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
 
 export const apiClient = {
+  async pingHealth(signal?: AbortSignal): Promise<void> {
+    const baseUrl = API_BASE.replace(/\/api$/, '');
+    await fetch(`${baseUrl}/health`, { signal });
+  },
+
   async uploadFiles(files: File[]): Promise<{ job_id: string; message: string }> {
     const formData = new FormData();
     files.forEach((file) => formData.append('files', file));
