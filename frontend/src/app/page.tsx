@@ -81,25 +81,39 @@ export default function Home() {
     }
   };
 
+  const handleReset = () => {
+    setJobId(null);
+    setJobStatus(null);
+    setAnalysis(null);
+    setUploadError(null);
+  };
+
   return (
     <main className="app-main">
       <header className="app-header">
-        <div className="logo-container">
+        <div className="logo-container" onClick={handleReset} style={{ cursor: 'pointer' }} title="Return to Home">
           <div className="logo-mark"></div>
           <h1>ProcurePilot</h1>
         </div>
-        {isWarming && !jobId && (
-          <div className="global-status warming-status">
-            <span className="status-dot"></span>
-            Waking up analysis engine... (may take up to 60s)
-          </div>
-        )}
-        {jobStatus && jobStatus.status !== 'COMPLETED' && jobStatus.status !== 'FAILED' && (
-          <div className="global-status">
-            <span className="status-dot"></span>
-            {jobStatus.progress_message}
-          </div>
-        )}
+        <div className="header-actions">
+          {analysis && (
+            <button className="header-back-btn" onClick={handleReset}>
+              ← Start New Analysis
+            </button>
+          )}
+          {isWarming && !jobId && (
+            <div className="global-status warming-status">
+              <span className="status-dot"></span>
+              Waking up analysis engine... (may take up to 60s)
+            </div>
+          )}
+          {jobStatus && jobStatus.status !== 'COMPLETED' && jobStatus.status !== 'FAILED' && (
+            <div className="global-status">
+              <span className="status-dot"></span>
+              {jobStatus.progress_message}
+            </div>
+          )}
+        </div>
       </header>
 
       <div className="content-wrapper">

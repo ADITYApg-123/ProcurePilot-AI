@@ -48,7 +48,7 @@ export function CopilotChat({ jobId, analysis }: Props) {
     setIsTyping(true);
 
     try {
-      const response = await apiClient.askCopilot(jobId, userMessage.content);
+      const response = await apiClient.askCopilot(jobId, userMessage.content, analysis);
       setMessages(prev => [
         ...prev, 
         { 
@@ -77,7 +77,7 @@ export function CopilotChat({ jobId, analysis }: Props) {
     ]);
     
     try {
-      const response = await apiClient.generateNegotiationStrategy(jobId, vendorName);
+      const response = await apiClient.generateNegotiationStrategy(jobId, vendorName, analysis);
       setMessages(prev => [
         ...prev, 
         { 

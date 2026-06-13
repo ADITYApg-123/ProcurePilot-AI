@@ -34,13 +34,16 @@ export const apiClient = {
     return response.json();
   },
 
-  async askCopilot(jobId: string, message: string): Promise<CopilotResponse> {
+  async askCopilot(jobId: string, message: string, analysis?: ProcurementAnalysis): Promise<CopilotResponse> {
+    const body: any = { job_id: jobId, message };
+    if (analysis) body.analysis_context = analysis;
+    
     const response = await fetch(`${API_BASE}/copilot/chat`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ job_id: jobId, message }),
+      body: JSON.stringify(body),
     });
 
     if (!response.ok) {
@@ -50,9 +53,16 @@ export const apiClient = {
     return response.json();
   },
 
-  async generateNegotiationStrategy(jobId: string, vendorName: string): Promise<{ vendor_name: string; strategy: string }> {
-    const response = await fetch(`${API_BASE}/copilot/negotiate/${jobId}/${encodeURIComponent(vendorName)}`, {
+  async generateNegotiationStrategy(jobId: string, vendorName: string, analysis?: ProcurementAnalysis): Promise<{ vendor_name: string; strategy: string }> {
+    const body: any = { job_id: jobId, vendor_name: vendorName };
+    if (analysis) body.analysis_context = analysis;
+    
+    const response = await fetch(`${API_BASE}/copilot/negotiate`, {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
     });
 
     if (!response.ok) {

@@ -93,6 +93,14 @@ class CopilotRequest(BaseModel):
     """User's question to the procurement copilot."""
     job_id: str
     message: str
+    analysis_context: Optional[ProcurementAnalysis] = None
+
+
+class NegotiateRequest(BaseModel):
+    """Request to generate a negotiation strategy."""
+    job_id: str
+    vendor_name: str
+    analysis_context: Optional[ProcurementAnalysis] = None
 
 
 class CopilotResponse(BaseModel):
