@@ -1,4 +1,4 @@
-import { JobResponse, CopilotResponse } from './types';
+import { JobResponse, CopilotResponse, ProcurementAnalysis } from './types';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
 
