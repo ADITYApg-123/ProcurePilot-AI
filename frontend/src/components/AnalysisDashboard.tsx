@@ -19,7 +19,7 @@ export function AnalysisDashboard({ jobId, analysis }: Props) {
   const handleDownload = async () => {
     try {
       setIsDownloading(true);
-      await apiClient.downloadReport(jobId);
+      await apiClient.downloadReport(jobId, analysis);
     } catch (err) {
       console.error(err);
       alert('Failed to download report.');

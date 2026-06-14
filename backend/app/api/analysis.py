@@ -48,3 +48,18 @@ def download_executive_report(job_id: str):
             "Content-Disposition": f"attachment; filename=ProcurePilot_Report_{job_id}.pdf"
         }
     )
+
+@router.post("/report/generate")
+def generate_custom_report(analysis: ProcurementAnalysis):
+    """
+    Generate and download a PDF executive report from direct analysis data.
+    """
+    pdf_bytes = generate_report(analysis)
+    
+    return Response(
+        content=bytes(pdf_bytes),
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": f"attachment; filename=ProcurePilot_Report_Demo.pdf"
+        }
+    )

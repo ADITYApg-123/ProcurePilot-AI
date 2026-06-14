@@ -72,8 +72,20 @@ export const apiClient = {
     return response.json();
   },
 
-  async downloadReport(jobId: string): Promise<void> {
-    const response = await fetch(`${API_BASE}/report/${jobId}`);
+  async downloadReport(jobId: string, analysis?: ProcurementAnalysis): Promise<void> {
+    let response;
+    
+    if (analysis) {
+      response = await fetch(`${API_BASE}/report/generate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(analysis),
+      });
+    } else {
+      response = await fetch(`${API_BASE}/report/${jobId}`);
+    }
     
     if (!response.ok) {
       throw new Error('Failed to download report');
@@ -83,7 +95,7 @@ export const apiClient = {
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `ProcurePilot_Report_${jobId}.pdf`;
+    a.download = analysis ? 'ProcurePilot_Report_Demo.pdf' : `ProcurePilot_Report_${jobId}.pdf`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
