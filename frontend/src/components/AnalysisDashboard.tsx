@@ -6,6 +6,8 @@ import { ProcurementAnalysis, RiskFlag } from '../services/types';
 import { Card } from './ui/Card';
 import { Badge } from './ui/Badge';
 import { apiClient } from '../services/apiClient';
+import { recalculateScores } from '../utils/scoring';
+import { Sliders } from 'lucide-react';
 import './AnalysisDashboard.css';
 
 interface Props {
@@ -15,6 +17,23 @@ interface Props {
 
 export function AnalysisDashboard({ jobId, analysis }: Props) {
   const [isDownloading, setIsDownloading] = React.useState(false);
+
+  // What-If Scenario Engine State
+  const [costWeight, setCostWeight] = React.useState(50);
+  const [warrantyWeight, setWarrantyWeight] = React.useState(20);
+  const [deliveryWeight, setDeliveryWeight] = React.useState(30);
+  const [displayAnalysis, setDisplayAnalysis] = React.useState(analysis);
+
+  React.useEffect(() => {
+    // Recalculate scores whenever sliders change
+    const newAnalysis = recalculateScores(
+      analysis,
+      costWeight,
+      warrantyWeight,
+      deliveryWeight
+    );
+    setDisplayAnalysis(newAnalysis);
+  }, [analysis, costWeight, warrantyWeight, deliveryWeight]);
 
   const handleDownload = async () => {
     try {
@@ -38,6 +57,61 @@ export function AnalysisDashboard({ jobId, analysis }: Props) {
   return (
     <div className="dashboard-container animate-fade-in">
       
+      {/* What-If Scenario Engine */}
+      <Card className="scenario-engine-card">
+        <div className="scenario-header">
+          <Sliders size={24} className="text-accent" />
+          <div>
+            <h3>⚡ What-If Scenario Engine</h3>
+            <p>Adjust priorities and watch vendor rankings recalculate in real-time. Zero AI — pure deterministic math.</p>
+          </div>
+        </div>
+        
+        <div className="sliders-container">
+          <div className="slider-group">
+            <div className="slider-label">
+              <span>Cost Priority</span>
+              <span>{costWeight}%</span>
+            </div>
+            <input 
+              type="range" 
+              min="0" max="100" 
+              value={costWeight} 
+              onChange={(e) => setCostWeight(Number(e.target.value))}
+              className="scenario-slider"
+            />
+          </div>
+          
+          <div className="slider-group">
+            <div className="slider-label">
+              <span>Warranty Priority</span>
+              <span>{warrantyWeight}%</span>
+            </div>
+            <input 
+              type="range" 
+              min="0" max="100" 
+              value={warrantyWeight} 
+              onChange={(e) => setWarrantyWeight(Number(e.target.value))}
+              className="scenario-slider"
+            />
+          </div>
+          
+          <div className="slider-group">
+            <div className="slider-label">
+              <span>Delivery Priority</span>
+              <span>{deliveryWeight}%</span>
+            </div>
+            <input 
+              type="range" 
+              min="0" max="100" 
+              value={deliveryWeight} 
+              onChange={(e) => setDeliveryWeight(Number(e.target.value))}
+              className="scenario-slider"
+            />
+          </div>
+        </div>
+      </Card>
+
       {/* Recommended Vendor Hero */}
       <Card className="hero-card">
         <div className="hero-content">
@@ -45,8 +119,8 @@ export function AnalysisDashboard({ jobId, analysis }: Props) {
             <Trophy size={48} />
           </div>
           <div className="hero-text">
-            <h2>Recommended: {analysis.recommended_vendor}</h2>
-            <p>{analysis.recommendation_reason}</p>
+            <h2>Recommended: {displayAnalysis.recommended_vendor}</h2>
+            <p>{displayAnalysis.recommendation_reason}</p>
           </div>
         </div>
         <button 
@@ -65,11 +139,11 @@ export function AnalysisDashboard({ jobId, analysis }: Props) {
         <div className="rankings-section">
           <h3>Vendor Rankings & Scores</h3>
           <div className="rankings-list">
-            {analysis.vendor_scores.map((score) => {
-              const totalCost = analysis.cost_comparison[score.vendor_name];
-              const warranty = analysis.warranty_comparison[score.vendor_name];
-              const delivery = analysis.delivery_comparison[score.vendor_name];
-              const isWinner = score.vendor_name === analysis.recommended_vendor;
+            {displayAnalysis.vendor_scores.map((score) => {
+              const totalCost = displayAnalysis.cost_comparison[score.vendor_name];
+              const warranty = displayAnalysis.warranty_comparison[score.vendor_name];
+              const delivery = displayAnalysis.delivery_comparison[score.vendor_name];
+              const isWinner = score.vendor_name === displayAnalysis.recommended_vendor;
 
               return (
                 <Card key={score.vendor_name} className={`ranking-card ${isWinner ? 'winner' : ''}`}>
@@ -112,11 +186,11 @@ export function AnalysisDashboard({ jobId, analysis }: Props) {
               <h3>Identified Risks</h3>
             </div>
             
-            {analysis.risk_flags.length === 0 ? (
+            {displayAnalysis.risk_flags.length === 0 ? (
               <p className="no-data">No major risks identified.</p>
             ) : (
               <ul className="risk-list">
-                {analysis.risk_flags.map((risk, i) => (
+                {displayAnalysis.risk_flags.map((risk, i) => (
                   <li key={i} className="risk-item">
                     <Badge variant={getBadgeVariant(risk.level)}>{risk.level}</Badge>
                     <div className="risk-details">
@@ -136,11 +210,11 @@ export function AnalysisDashboard({ jobId, analysis }: Props) {
               <h3>Savings Opportunities</h3>
             </div>
             
-            {analysis.savings_opportunities.length === 0 ? (
+            {displayAnalysis.savings_opportunities.length === 0 ? (
               <p className="no-data">The recommended vendor optimizes for warranty and delivery speed over unit cost.</p>
             ) : (
               <ul className="savings-list">
-                {analysis.savings_opportunities.map((saving, i) => (
+                {displayAnalysis.savings_opportunities.map((saving, i) => (
                   <li key={i} className="saving-item">
                     <div className="saving-amount">
                       Save ₹{saving.savings_amount.toLocaleString()} 
