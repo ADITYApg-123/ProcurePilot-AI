@@ -57,6 +57,28 @@ export function AnalysisDashboard({ jobId, analysis }: Props) {
   return (
     <div className="dashboard-container animate-fade-in">
       
+      {/* Recommended Vendor Hero */}
+      <Card className="hero-card">
+        <div className="hero-content">
+          <div className="hero-icon">
+            <Trophy size={48} />
+          </div>
+          <div className="hero-text">
+            <h2>Recommended: {displayAnalysis.recommended_vendor}</h2>
+            <p>{displayAnalysis.recommendation_reason}</p>
+          </div>
+        </div>
+        <button 
+          className="btn-primary" 
+          style={{ marginTop: '20px' }}
+          onClick={handleDownload}
+          disabled={isDownloading}
+        >
+          <Download size={18} />
+          {isDownloading ? 'Generating...' : 'Download Executive PDF Report'}
+        </button>
+      </Card>
+
       {/* What-If Scenario Engine */}
       <Card className="scenario-engine-card">
         <div className="scenario-header">
@@ -110,28 +132,6 @@ export function AnalysisDashboard({ jobId, analysis }: Props) {
             />
           </div>
         </div>
-      </Card>
-
-      {/* Recommended Vendor Hero */}
-      <Card className="hero-card">
-        <div className="hero-content">
-          <div className="hero-icon">
-            <Trophy size={48} />
-          </div>
-          <div className="hero-text">
-            <h2>Recommended: {displayAnalysis.recommended_vendor}</h2>
-            <p>{displayAnalysis.recommendation_reason}</p>
-          </div>
-        </div>
-        <button 
-          className="btn-primary" 
-          style={{ marginTop: '20px' }}
-          onClick={handleDownload}
-          disabled={isDownloading}
-        >
-          <Download size={18} />
-          {isDownloading ? 'Generating...' : 'Download Executive PDF Report'}
-        </button>
       </Card>
 
       <div className="dashboard-grid">
