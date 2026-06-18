@@ -46,6 +46,7 @@ export function ProductTour({ run }: ProductTourProps) {
       target: '.tour-step-confidence',
       content: 'These bars show how confident the AI was when reading the document. Green means high confidence, red means you should verify the value manually.',
       skipBeacon: true,
+      skipScroll: true,
       placement: 'top',
     },
     {
