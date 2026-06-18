@@ -5,6 +5,7 @@ import { Trophy, AlertTriangle, TrendingDown, DollarSign, Clock, ShieldCheck, Do
 import { ProcurementAnalysis, RiskFlag } from '../services/types';
 import { Card } from './ui/Card';
 import { Badge } from './ui/Badge';
+import { ConfidenceBar } from './ui/ConfidenceBar';
 import { apiClient } from '../services/apiClient';
 import { recalculateScores } from '../utils/scoring';
 import { Sliders } from 'lucide-react';
@@ -207,27 +208,39 @@ export function AnalysisDashboard({ jobId, analysis }: Props) {
                   </tr>
                   <tr>
                     <td><strong>Total Cost</strong></td>
-                    {displayAnalysis.vendor_scores.map(score => (
-                      <td key={score.vendor_name} className={score.vendor_name === displayAnalysis.recommended_vendor ? 'highlight-col' : ''}>
-                        ₹{displayAnalysis.cost_comparison[score.vendor_name].toLocaleString()}
-                      </td>
-                    ))}
+                    {displayAnalysis.vendor_scores.map(score => {
+                      const costConf = displayAnalysis.confidence_scores?.[score.vendor_name]?.grand_total ?? 100;
+                      return (
+                        <td key={score.vendor_name} className={score.vendor_name === displayAnalysis.recommended_vendor ? 'highlight-col' : ''}>
+                          ₹{displayAnalysis.cost_comparison[score.vendor_name].toLocaleString()}
+                          <ConfidenceBar score={costConf} />
+                        </td>
+                      );
+                    })}
                   </tr>
                   <tr>
                     <td><strong>Warranty</strong></td>
-                    {displayAnalysis.vendor_scores.map(score => (
-                      <td key={score.vendor_name} className={score.vendor_name === displayAnalysis.recommended_vendor ? 'highlight-col' : ''}>
-                        {displayAnalysis.warranty_comparison[score.vendor_name]} Months
-                      </td>
-                    ))}
+                    {displayAnalysis.vendor_scores.map(score => {
+                      const warrantyConf = displayAnalysis.confidence_scores?.[score.vendor_name]?.warranty_months ?? 100;
+                      return (
+                        <td key={score.vendor_name} className={score.vendor_name === displayAnalysis.recommended_vendor ? 'highlight-col' : ''}>
+                          {displayAnalysis.warranty_comparison[score.vendor_name]} Months
+                          <ConfidenceBar score={warrantyConf} />
+                        </td>
+                      );
+                    })}
                   </tr>
                   <tr>
                     <td><strong>Lead Time</strong></td>
-                    {displayAnalysis.vendor_scores.map(score => (
-                      <td key={score.vendor_name} className={score.vendor_name === displayAnalysis.recommended_vendor ? 'highlight-col' : ''}>
-                        {displayAnalysis.delivery_comparison[score.vendor_name]} Days
-                      </td>
-                    ))}
+                    {displayAnalysis.vendor_scores.map(score => {
+                      const deliveryConf = displayAnalysis.confidence_scores?.[score.vendor_name]?.delivery_days ?? 100;
+                      return (
+                        <td key={score.vendor_name} className={score.vendor_name === displayAnalysis.recommended_vendor ? 'highlight-col' : ''}>
+                          {displayAnalysis.delivery_comparison[score.vendor_name]} Days
+                          <ConfidenceBar score={deliveryConf} />
+                        </td>
+                      );
+                    })}
                   </tr>
                 </tbody>
               </table>

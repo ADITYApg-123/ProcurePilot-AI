@@ -54,6 +54,12 @@ class VendorQuotation(BaseModel):
     # Additional
     special_conditions: Optional[str] = Field(None, description="Any special terms, notes, or conditions")
 
+    # Extraction Confidence
+    confidence_scores: dict[str, int] = Field(
+        ..., 
+        description="A dictionary mapping every extracted field name (e.g. 'grand_total', 'warranty_months', 'delivery_days') to a confidence score from 0 to 100, indicating how certain you are about the extracted value. For missing values, use 0."
+    )
+
 
 class ExtractionResult(BaseModel):
     """Result of the document extraction process."""

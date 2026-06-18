@@ -48,6 +48,34 @@
   animation: spin 1s ease-in-out infinite;
 }
 
+/* Confidence Bar */
+.confidence-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.confidence-track {
+  height: 6px;
+  background: #f1f5f9;
+  border-radius: 4px;
+  flex-grow: 1;
+  overflow: hidden;
+  max-width: 80px;
+}
+
+.confidence-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.confidence-text {
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
 @keyframes spin {
   to {
     transform: rotate(360deg);

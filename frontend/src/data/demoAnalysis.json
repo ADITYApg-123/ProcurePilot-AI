@@ -56,5 +56,22 @@
     "Apex Industrial Motors": 10,
     "Beta Dynamics Engineering": 15,
     "CoreDrive Solutions Ltd": 35
+  },
+  "confidence_scores": {
+    "Apex Industrial Motors": {
+      "grand_total": 98,
+      "warranty_months": 82,
+      "delivery_days": 65
+    },
+    "Beta Dynamics Engineering": {
+      "grand_total": 95,
+      "warranty_months": 90,
+      "delivery_days": 95
+    },
+    "CoreDrive Solutions Ltd": {
+      "grand_total": 85,
+      "warranty_months": 40,
+      "delivery_days": 20
+    }
   }
 }
