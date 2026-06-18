@@ -1,5 +1,7 @@
+"use client";
+
 import React, { useState, useEffect } from 'react';
-import Joyride, { Step, CallBackProps, STATUS } from 'react-joyride';
+import { Joyride, Step, CallBackProps, STATUS } from 'react-joyride';
 
 interface ProductTourProps {
   run: boolean;
