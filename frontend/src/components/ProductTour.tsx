@@ -20,33 +20,38 @@ export function ProductTour({ run }: ProductTourProps) {
   const steps: Step[] = [
     {
       target: '.tour-step-winner',
-      content: 'This is your recommended vendor, calculated using 100% deterministic math.',
+      content: 'This is the top vendor based on the math.',
       disableBeacon: true,
       placement: 'bottom',
     },
     {
       target: '.tour-step-badges',
-      content: 'Quickly see potential savings, risk profile, and the AI\'s overall math confidence at a glance.',
+      content: 'Quick overview of potential savings, risks, and extraction confidence.',
+      disableBeacon: true,
       placement: 'bottom',
     },
     {
       target: '.tour-step-sliders',
-      content: 'Try dragging these sliders! The math recalculates instantly on the frontend without calling the AI.',
+      content: 'Use these sliders to adjust your priorities. The scores update instantly.',
+      disableBeacon: true,
       placement: 'bottom',
     },
     {
       target: '.tour-step-matrix',
-      content: 'Compare all vendors side-by-side cleanly and efficiently.',
+      content: 'Compare the vendors side-by-side here.',
+      disableBeacon: true,
       placement: 'top',
     },
     {
       target: '.tour-step-confidence',
-      content: 'This is crucial: see exactly how confident the AI was when extracting every single field. No hidden hallucinations. Green is solid, Red needs verification.',
+      content: 'These bars show how confident the AI was when reading the document. Green means high confidence, red means you should verify the value manually.',
+      disableBeacon: true,
       placement: 'top',
     },
     {
       target: '.tour-step-copilot',
-      content: 'Ask questions or simulate negotiations with the AI Copilot on the right.',
+      content: 'You can ask questions or test negotiation strategies with the Copilot here.',
+      disableBeacon: true,
       placement: 'left',
     }
   ];
@@ -68,6 +73,8 @@ export function ProductTour({ run }: ProductTourProps) {
       continuous={true}
       showProgress={true}
       showSkipButton={true}
+      disableOverlayClose={true}
+      locale={{ skip: 'Skip Tour' }}
       callback={handleJoyrideCallback}
       styles={{
         options: {
