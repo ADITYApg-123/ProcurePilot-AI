@@ -56,8 +56,9 @@ export function ProductTour({ run }: ProductTourProps) {
     }
   ];
 
-  const handleJoyrideCallback = (data: any) => {
-    const { status } = data;
+  const handleJoyrideEvent = (data: any) => {
+    const { status, type } = data;
+    // STATUS.FINISHED and STATUS.SKIPPED are valid in v3
     const finishedStatuses: string[] = [STATUS.FINISHED, STATUS.SKIPPED];
     
     if (finishedStatuses.includes(status)) {
@@ -71,17 +72,15 @@ export function ProductTour({ run }: ProductTourProps) {
       steps={steps}
       run={run && !hasSeenTour}
       continuous={true}
-      showProgress={true}
-      showSkipButton={true}
-      disableOverlayClose={true}
-      locale={{ skip: 'Skip Tour' }}
-      callback={handleJoyrideCallback}
-      styles={{
-        options: {
-          primaryColor: '#2563eb', // blue-600 to match our UI
-          zIndex: 10000,
-        },
+      options={{
+        buttons: ['skip', 'back', 'close', 'primary'], // adds skip button!
+        showProgress: true,
+        overlayClickAction: false, // prevents closing on overlay click
+        primaryColor: '#2563eb',
+        zIndex: 10000,
       }}
+      locale={{ skip: 'Skip Tour' }}
+      onEvent={handleJoyrideEvent}
     />
   );
 }
