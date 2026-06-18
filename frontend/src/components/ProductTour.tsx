@@ -9,6 +9,7 @@ interface ProductTourProps {
 
 export function ProductTour({ run }: ProductTourProps) {
   const [hasSeenTour, setHasSeenTour] = useState(false);
+  const [stepIndex, setStepIndex] = useState(0);
 
   useEffect(() => {
     const seen = localStorage.getItem('hasSeenTour');
@@ -25,14 +26,14 @@ export function ProductTour({ run }: ProductTourProps) {
       placement: 'bottom',
     },
     {
-      target: '.tour-step-badges',
-      content: 'Quick overview of potential savings, risks, and extraction confidence.',
+      target: '.tour-step-sliders',
+      content: 'Use these sliders to adjust your priorities. The scores update instantly.',
       disableBeacon: true,
       placement: 'bottom',
     },
     {
-      target: '.tour-step-sliders',
-      content: 'Use these sliders to adjust your priorities. The scores update instantly.',
+      target: '.tour-step-badges',
+      content: 'Quick overview of potential savings, risks, and extraction confidence.',
       disableBeacon: true,
       placement: 'bottom',
     },
@@ -57,18 +58,22 @@ export function ProductTour({ run }: ProductTourProps) {
   ];
 
   const handleJoyrideCallback = (data: CallBackProps) => {
-    const { status } = data;
+    const { status, type, index, action } = data;
     const finishedStatuses: string[] = [STATUS.FINISHED, STATUS.SKIPPED];
     
     if (finishedStatuses.includes(status)) {
       localStorage.setItem('hasSeenTour', 'true');
       setHasSeenTour(true);
+    } else if (type === 'step:after' || type === 'target:notFound') {
+      // Update step index to move forward or backward
+      setStepIndex(index + (action === 'prev' ? -1 : 1));
     }
   };
 
   return (
     <Joyride
       steps={steps}
+      stepIndex={stepIndex}
       run={run && !hasSeenTour}
       continuous={true}
       showProgress={true}
