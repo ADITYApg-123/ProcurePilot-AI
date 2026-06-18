@@ -68,7 +68,7 @@ export function AnalysisDashboard({ jobId, analysis }: Props) {
     <div className="dashboard-container animate-fade-in">
       
       {/* Recommended Vendor Hero */}
-      <Card className="hero-card">
+      <Card className="hero-card tour-step-winner">
         <div className="hero-content">
           <div className="hero-icon">
             <Trophy size={48} />
@@ -90,7 +90,7 @@ export function AnalysisDashboard({ jobId, analysis }: Props) {
       </Card>
 
       {/* What-If Scenario Engine */}
-      <Card className="scenario-engine-card">
+      <Card className="scenario-engine-card tour-step-sliders">
         <div className="scenario-header">
           <Sliders size={24} className="text-accent" />
           <div>
@@ -145,7 +145,7 @@ export function AnalysisDashboard({ jobId, analysis }: Props) {
       </Card>
 
       {/* Insights Row */}
-      <div className="insights-row animate-fade-in">
+      <div className="insights-row animate-fade-in tour-step-badges">
         <Card className="insight-card">
           <div className="insight-icon bg-success-light">
             <TrendingDown size={24} className="text-success" />
@@ -181,7 +181,7 @@ export function AnalysisDashboard({ jobId, analysis }: Props) {
         {/* Standardized Vendor Comparison Table */}
         <div className="rankings-section">
           <h3>Vendor Comparison Matrix</h3>
-          <Card className="table-card">
+          <Card className="table-card tour-step-matrix">
             <div className="table-responsive">
               <table className="comparison-table">
                 <thead>
@@ -211,7 +211,7 @@ export function AnalysisDashboard({ jobId, analysis }: Props) {
                     {displayAnalysis.vendor_scores.map(score => {
                       const costConf = displayAnalysis.confidence_scores?.[score.vendor_name]?.grand_total ?? 100;
                       return (
-                        <td key={score.vendor_name} className={score.vendor_name === displayAnalysis.recommended_vendor ? 'highlight-col' : ''}>
+                        <td key={score.vendor_name} className={score.vendor_name === displayAnalysis.recommended_vendor ? 'highlight-col tour-step-confidence' : ''}>
                           ₹{displayAnalysis.cost_comparison[score.vendor_name].toLocaleString()}
                           <ConfidenceBar score={costConf} />
                         </td>
@@ -223,7 +223,7 @@ export function AnalysisDashboard({ jobId, analysis }: Props) {
                     {displayAnalysis.vendor_scores.map(score => {
                       const warrantyConf = displayAnalysis.confidence_scores?.[score.vendor_name]?.warranty_months ?? 100;
                       return (
-                        <td key={score.vendor_name} className={score.vendor_name === displayAnalysis.recommended_vendor ? 'highlight-col' : ''}>
+                        <td key={score.vendor_name} className={score.vendor_name === displayAnalysis.recommended_vendor ? 'highlight-col tour-step-confidence' : ''}>
                           {displayAnalysis.warranty_comparison[score.vendor_name]} Months
                           <ConfidenceBar score={warrantyConf} />
                         </td>
@@ -235,7 +235,7 @@ export function AnalysisDashboard({ jobId, analysis }: Props) {
                     {displayAnalysis.vendor_scores.map(score => {
                       const deliveryConf = displayAnalysis.confidence_scores?.[score.vendor_name]?.delivery_days ?? 100;
                       return (
-                        <td key={score.vendor_name} className={score.vendor_name === displayAnalysis.recommended_vendor ? 'highlight-col' : ''}>
+                        <td key={score.vendor_name} className={score.vendor_name === displayAnalysis.recommended_vendor ? 'highlight-col tour-step-confidence' : ''}>
                           {displayAnalysis.delivery_comparison[score.vendor_name]} Days
                           <ConfidenceBar score={deliveryConf} />
                         </td>

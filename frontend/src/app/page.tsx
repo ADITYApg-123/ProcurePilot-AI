@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { UploadWorkspace } from '../components/UploadWorkspace';
 import { AnalysisDashboard } from '../components/AnalysisDashboard';
 import { CopilotChat } from '../components/CopilotChat';
+import { ProductTour } from '../components/ProductTour';
 import { apiClient } from '../services/apiClient';
 import { JobResponse, ProcurementAnalysis } from '../services/types';
 import './page.css';
@@ -126,6 +127,7 @@ export default function Home() {
           />
         ) : (
           <div className="results-view animate-fade-in">
+            <ProductTour run={!!analysis} />
             <div className="main-content">
               <AnalysisDashboard jobId={jobId!} analysis={analysis} />
             </div>
