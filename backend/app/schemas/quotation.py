@@ -18,6 +18,12 @@ class ProductItem(BaseModel):
     total_price: float = Field(..., ge=0, description="Total price for this line item in INR")
 
 
+class FieldConfidence(BaseModel):
+    """Specific confidence scores for critical fields to satisfy Gemini's strict structured output requirements."""
+    grand_total: int = Field(100, ge=0, le=100, description="Confidence score for grand_total")
+    warranty_months: int = Field(100, ge=0, le=100, description="Confidence score for warranty_months")
+    delivery_days: int = Field(100, ge=0, le=100, description="Confidence score for delivery_days")
+
 class VendorQuotation(BaseModel):
     """
     Structured representation of a vendor quotation.
@@ -55,9 +61,9 @@ class VendorQuotation(BaseModel):
     special_conditions: Optional[str] = Field(None, description="Any special terms, notes, or conditions")
 
     # Extraction Confidence
-    confidence_scores: dict[str, int] = Field(
+    confidence_scores: FieldConfidence = Field(
         ..., 
-        description="A dictionary mapping every extracted field name (e.g. 'grand_total', 'warranty_months', 'delivery_days') to a confidence score from 0 to 100, indicating how certain you are about the extracted value. For missing values, use 0."
+        description="A strictly typed object mapping the critical extracted fields (grand_total, warranty_months, delivery_days) to a confidence score from 0 to 100, indicating how certain you are about the extracted value. For missing values, use 0."
     )
 
 
