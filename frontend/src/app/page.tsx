@@ -123,6 +123,7 @@ export default function Home() {
             onUpload={handleUpload} 
             onLoadDemo={handleLoadDemo}
             isUploading={!!jobId && jobStatus?.status !== 'FAILED'} 
+            jobStatus={jobStatus}
             error={uploadError} 
           />
         ) : (
