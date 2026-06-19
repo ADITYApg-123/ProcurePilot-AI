@@ -24,6 +24,7 @@ class JobResponse(BaseModel):
     job_id: str
     status: JobStatus
     progress_message: str = ""
+    logs: list[str] = []
     result: Optional[dict] = None
 
 

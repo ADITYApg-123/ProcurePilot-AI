@@ -22,5 +22,6 @@ def get_job_status(job_id: str):
         job_id=job.id,
         status=job.status,
         progress_message=job.progress_message,
+        logs=job.logs,
         result=job.result if job.status == JobStatus.COMPLETED else None,
     )

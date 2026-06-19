@@ -4,16 +4,18 @@ import React, { useState, useCallback, useRef } from 'react';
 import { UploadCloud, File as FileIcon, X, CheckCircle, AlertCircle } from 'lucide-react';
 import { Card } from './ui/Card';
 import { Spinner } from './ui/Spinner';
+import { JobResponse } from '../services/types';
 import './UploadWorkspace.css';
 
 interface UploadWorkspaceProps {
   onUpload: (files: File[]) => Promise<void>;
   onLoadDemo?: () => void;
   isUploading: boolean;
+  jobStatus?: JobResponse | null;
   error?: string | null;
 }
 
-export function UploadWorkspace({ onUpload, onLoadDemo, isUploading, error }: UploadWorkspaceProps) {
+export function UploadWorkspace({ onUpload, onLoadDemo, isUploading, jobStatus, error }: UploadWorkspaceProps) {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -55,6 +57,61 @@ export function UploadWorkspace({ onUpload, onLoadDemo, isUploading, error }: Up
       onUpload(selectedFiles);
     }
   };
+
+  if (jobStatus && jobStatus.status !== 'FAILED') {
+    return (
+      <Card className="upload-workspace animate-fade-in pipeline-view">
+        <div className="pipeline-header">
+          <h2>Analyzing Vendor Quotations</h2>
+          <p className="hero-tagline">Deterministic extraction and math engine running...</p>
+        </div>
+        
+        <div className="pipeline-stages">
+          <div className={`pipeline-stage ${['UPLOADED', 'EXTRACTING', 'ANALYZING', 'COMPLETED'].includes(jobStatus.status) ? 'active' : ''}`}>
+            <span className="stage-icon">📄</span>
+            <span>Upload</span>
+          </div>
+          <div className="pipeline-connector"></div>
+          <div className={`pipeline-stage ${['EXTRACTING', 'ANALYZING', 'COMPLETED'].includes(jobStatus.status) ? 'active' : ''}`}>
+            <span className="stage-icon">🤖</span>
+            <span>AI Extract</span>
+          </div>
+          <div className="pipeline-connector"></div>
+          <div className={`pipeline-stage ${['ANALYZING', 'COMPLETED'].includes(jobStatus.status) ? 'active' : ''}`}>
+            <span className="stage-icon">🧮</span>
+            <span>Math Score</span>
+          </div>
+          <div className="pipeline-connector"></div>
+          <div className={`pipeline-stage ${['COMPLETED'].includes(jobStatus.status) ? 'active' : ''}`}>
+            <span className="stage-icon">💬</span>
+            <span>Copilot</span>
+          </div>
+        </div>
+
+        <div className="terminal-container">
+          <div className="terminal-header">
+            <span>🤖 AI EXTRACTION & SCORING LOG (Live)</span>
+            {jobStatus.status === 'COMPLETED' ? <span className="status-badge success">Complete</span> : <span className="status-badge blinking">Processing...</span>}
+          </div>
+          <div className="terminal-body" ref={(el) => {
+            if (el) el.scrollTop = el.scrollHeight;
+          }}>
+            {jobStatus.logs?.map((log, i) => (
+              <div key={i} className="terminal-log-line">
+                {log}
+              </div>
+            ))}
+            {jobStatus.status !== 'COMPLETED' && (
+              <div className="terminal-log-line blinking-cursor">_</div>
+            )}
+          </div>
+        </div>
+        <div className="deterministic-notice">
+          <span className="gear-icon">⚙️</span> This pipeline is deterministic-first: AI handles extraction → Math handles scoring → No hallucinated numbers in your final vendor comparison.
+        </div>
+      </Card>
+    );
+  }
 
   return (
     <Card className="upload-workspace animate-fade-in">

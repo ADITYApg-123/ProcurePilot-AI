@@ -53,13 +53,14 @@ export function recalculateScores(
     };
   });
 
-  // 4. Sort and assign ranks
-  newScores.sort((a, b) => b.overall_score - a.overall_score);
-  newScores.forEach((score, index) => {
-    score.rank = index + 1;
+  // 4. Determine ranks without changing the original order of vendors
+  const sortedScores = [...newScores].sort((a, b) => b.overall_score - a.overall_score);
+  
+  newScores.forEach(score => {
+    score.rank = sortedScores.findIndex(s => s.vendor_name === score.vendor_name) + 1;
   });
 
-  const recommendedVendor = newScores[0].vendor_name;
+  const recommendedVendor = sortedScores[0].vendor_name;
 
   // We could also recalculate savings and recommendation reasons here,
   // but for the hackathon MVP, just updating the scores, ranks, and 
