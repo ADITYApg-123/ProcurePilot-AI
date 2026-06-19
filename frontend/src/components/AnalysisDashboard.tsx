@@ -1,10 +1,11 @@
 "use client";
 
 import React from 'react';
-import { Trophy, AlertTriangle, TrendingDown, DollarSign, Clock, ShieldCheck, Download } from 'lucide-react';
+import { Trophy, AlertTriangle, TrendingDown, DollarSign, Clock, ShieldCheck, Download, Zap, ShieldAlert, CheckCircle } from 'lucide-react';
 import { ProcurementAnalysis, RiskFlag } from '../services/types';
 import { Card } from './ui/Card';
 import { Badge } from './ui/Badge';
+import { ConfidenceBar } from './ui/ConfidenceBar';
 import { apiClient } from '../services/apiClient';
 import { recalculateScores } from '../utils/scoring';
 import { Sliders } from 'lucide-react';
@@ -54,11 +55,20 @@ export function AnalysisDashboard({ jobId, analysis }: Props) {
     }
   };
 
+  // Compute Insights
+  const hasHighRisk = displayAnalysis.risk_flags.some(r => r.level === 'HIGH');
+  const hasMedRisk = displayAnalysis.risk_flags.some(r => r.level === 'MEDIUM');
+  const overallRisk = hasHighRisk ? 'HIGH' : hasMedRisk ? 'MEDIUM' : 'LOW';
+  
+  const maxSavings = displayAnalysis.savings_opportunities.length > 0 
+    ? Math.max(...displayAnalysis.savings_opportunities.map(s => s.savings_amount))
+    : 0;
+
   return (
     <div className="dashboard-container animate-fade-in">
       
       {/* Recommended Vendor Hero */}
-      <Card className="hero-card">
+      <Card className="hero-card tour-step-winner">
         <div className="hero-content">
           <div className="hero-icon">
             <Trophy size={48} />
@@ -80,7 +90,7 @@ export function AnalysisDashboard({ jobId, analysis }: Props) {
       </Card>
 
       {/* What-If Scenario Engine */}
-      <Card className="scenario-engine-card">
+      <Card className="scenario-engine-card tour-step-sliders">
         <div className="scenario-header">
           <Sliders size={24} className="text-accent" />
           <div>
@@ -134,48 +144,108 @@ export function AnalysisDashboard({ jobId, analysis }: Props) {
         </div>
       </Card>
 
-      <div className="dashboard-grid">
-        {/* Vendor Rankings */}
-        <div className="rankings-section">
-          <h3>Vendor Rankings & Scores</h3>
-          <div className="rankings-list">
-            {displayAnalysis.vendor_scores.map((score) => {
-              const totalCost = displayAnalysis.cost_comparison[score.vendor_name];
-              const warranty = displayAnalysis.warranty_comparison[score.vendor_name];
-              const delivery = displayAnalysis.delivery_comparison[score.vendor_name];
-              const isWinner = score.vendor_name === displayAnalysis.recommended_vendor;
-
-              return (
-                <Card key={score.vendor_name} className={`ranking-card ${isWinner ? 'winner' : ''}`}>
-                  <div className="ranking-header">
-                    <div className="rank-badge">#{score.rank}</div>
-                    <h4>{score.vendor_name}</h4>
-                    <div className="overall-score">
-                      {score.overall_score.toFixed(1)} / 100
-                    </div>
-                  </div>
-                  
-                  <div className="metrics-grid">
-                    <div className="metric">
-                      <DollarSign size={16} />
-                      <span>₹{totalCost.toLocaleString()}</span>
-                      <small>Cost Score: {score.cost_score}</small>
-                    </div>
-                    <div className="metric">
-                      <ShieldCheck size={16} />
-                      <span>{warranty} Months</span>
-                      <small>Warranty Score: {score.warranty_score}</small>
-                    </div>
-                    <div className="metric">
-                      <Clock size={16} />
-                      <span>{delivery} Days</span>
-                      <small>Delivery Score: {score.delivery_score}</small>
-                    </div>
-                  </div>
-                </Card>
-              );
-            })}
+      {/* Insights Row */}
+      <div className="insights-row animate-fade-in tour-step-badges">
+        <Card className="insight-card">
+          <div className="insight-icon bg-success-light">
+            <TrendingDown size={24} className="text-success" />
           </div>
+          <div>
+            <p className="insight-label">Potential Savings</p>
+            <h4 className="insight-value">{maxSavings > 0 ? `₹${maxSavings.toLocaleString()}` : 'Optimized'}</h4>
+          </div>
+        </Card>
+        
+        <Card className="insight-card">
+          <div className={`insight-icon ${overallRisk === 'HIGH' ? 'bg-error-light' : overallRisk === 'MEDIUM' ? 'bg-warning-light' : 'bg-success-light'}`}>
+            <ShieldAlert size={24} className={overallRisk === 'HIGH' ? 'text-error' : overallRisk === 'MEDIUM' ? 'text-warning' : 'text-success'} />
+          </div>
+          <div>
+            <p className="insight-label">Overall Risk Profile</p>
+            <h4 className="insight-value">{overallRisk}</h4>
+          </div>
+        </Card>
+
+        <Card className="insight-card">
+          <div className="insight-icon bg-info-light">
+            <CheckCircle size={24} className="text-accent" />
+          </div>
+          <div>
+            <p className="insight-label">Math Confidence</p>
+            <h4 className="insight-value">100% Deterministic</h4>
+          </div>
+        </Card>
+      </div>
+
+      <div className="dashboard-grid">
+        {/* Standardized Vendor Comparison Table */}
+        <div className="rankings-section">
+          <h3>Vendor Comparison Matrix</h3>
+          <Card className="table-card tour-step-matrix">
+            <div className="table-responsive">
+              <table className="comparison-table">
+                <thead>
+                  <tr>
+                    <th>Metric</th>
+                    {displayAnalysis.vendor_scores.map(score => (
+                      <th key={score.vendor_name} className={score.vendor_name === displayAnalysis.recommended_vendor ? 'highlight-col' : ''}>
+                        {score.vendor_name}
+                        {score.vendor_name === displayAnalysis.recommended_vendor && (
+                          <Badge variant="success" className="winner-badge">Winner</Badge>
+                        )}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Overall Score</strong></td>
+                    {displayAnalysis.vendor_scores.map(score => (
+                      <td key={score.vendor_name} className={score.vendor_name === displayAnalysis.recommended_vendor ? 'highlight-col' : ''}>
+                        <div className="score-circle">{score.overall_score.toFixed(1)}</div>
+                      </td>
+                    ))}
+                  </tr>
+                  <tr>
+                    <td><strong>Total Cost</strong></td>
+                    {displayAnalysis.vendor_scores.map(score => {
+                      const costConf = displayAnalysis.confidence_scores?.[score.vendor_name]?.grand_total ?? 100;
+                      return (
+                        <td key={score.vendor_name} className={score.vendor_name === displayAnalysis.recommended_vendor ? 'highlight-col tour-step-confidence' : ''}>
+                          ₹{displayAnalysis.cost_comparison[score.vendor_name].toLocaleString()}
+                          <ConfidenceBar score={costConf} />
+                        </td>
+                      );
+                    })}
+                  </tr>
+                  <tr>
+                    <td><strong>Warranty</strong></td>
+                    {displayAnalysis.vendor_scores.map(score => {
+                      const warrantyConf = displayAnalysis.confidence_scores?.[score.vendor_name]?.warranty_months ?? 100;
+                      return (
+                        <td key={score.vendor_name} className={score.vendor_name === displayAnalysis.recommended_vendor ? 'highlight-col tour-step-confidence' : ''}>
+                          {displayAnalysis.warranty_comparison[score.vendor_name]} Months
+                          <ConfidenceBar score={warrantyConf} />
+                        </td>
+                      );
+                    })}
+                  </tr>
+                  <tr>
+                    <td><strong>Lead Time</strong></td>
+                    {displayAnalysis.vendor_scores.map(score => {
+                      const deliveryConf = displayAnalysis.confidence_scores?.[score.vendor_name]?.delivery_days ?? 100;
+                      return (
+                        <td key={score.vendor_name} className={score.vendor_name === displayAnalysis.recommended_vendor ? 'highlight-col tour-step-confidence' : ''}>
+                          {displayAnalysis.delivery_comparison[score.vendor_name]} Days
+                          <ConfidenceBar score={deliveryConf} />
+                        </td>
+                      );
+                    })}
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </Card>
         </div>
 
         <div className="side-panels">

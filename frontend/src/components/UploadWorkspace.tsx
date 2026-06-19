@@ -58,17 +58,11 @@ export function UploadWorkspace({ onUpload, onLoadDemo, isUploading, error }: Up
 
   return (
     <Card className="upload-workspace animate-fade-in">
-      <div className="architecture-banner">
-        <span className="banner-icon">⚙️</span>
-        <div className="banner-content">
-          <strong>Deterministic-First Architecture</strong>
-          <p>✓ Financial math = Pure Python (zero AI) &nbsp;•&nbsp; ✓ AI = Data extraction only &nbsp;•&nbsp; ✓ No hallucinations in scores</p>
-        </div>
-      </div>
+
 
       <div className="upload-header">
-        <h2>Procurement Workspace</h2>
-        <p className="hero-tagline">Compare vendor quotes in seconds. Math, not hallucinations.</p>
+        <h2>100% Deterministic Procurement</h2>
+        <p className="hero-tagline">Analyze vendor quotes with auditable financial math. Zero AI calculation hallucinations.</p>
       </div>
 
       {onLoadDemo && (
@@ -103,34 +97,7 @@ export function UploadWorkspace({ onUpload, onLoadDemo, isUploading, error }: Up
         />
       </div>
 
-      <div className="how-it-works animate-fade-in">
-        <h4>How it Works</h4>
-        <div className="pipeline-steps">
-          <div className="step">
-            <div className="step-number">1</div>
-            <strong>Upload PDFs</strong>
-            <span>Vendor quotes</span>
-          </div>
-          <div className="step-arrow">→</div>
-          <div className="step">
-            <div className="step-number">2</div>
-            <strong>AI Extracts</strong>
-            <span>Structured data via Gemini Flash</span>
-          </div>
-          <div className="step-arrow">→</div>
-          <div className="step">
-            <div className="step-number">3</div>
-            <strong>Math Scores</strong>
-            <span>Pure Python logic</span>
-          </div>
-          <div className="step-arrow">→</div>
-          <div className="step">
-            <div className="step-number">4</div>
-            <strong>Copilot Advises</strong>
-            <span>Grounded reasoning</span>
-          </div>
-        </div>
-      </div>
+
 
       {error && (
         <div className="upload-error">

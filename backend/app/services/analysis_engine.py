@@ -27,6 +27,8 @@ class AnalysisEngine:
         cost_comparison = {q.vendor_name: q.grand_total for q in quotations}
         warranty_comparison = {q.vendor_name: q.warranty_months for q in quotations}
         delivery_comparison = {q.vendor_name: q.delivery_days for q in quotations}
+        confidence_scores = {q.vendor_name: q.confidence_scores for q in quotations}
+        
         
         # 1. Vendor Scoring Engine
         vendor_scores = self._calculate_scores(quotations, weights)
@@ -55,7 +57,8 @@ class AnalysisEngine:
             savings_opportunities=savings,
             cost_comparison=cost_comparison,
             warranty_comparison=warranty_comparison,
-            delivery_comparison=delivery_comparison
+            delivery_comparison=delivery_comparison,
+            confidence_scores=confidence_scores
         )
 
     def _calculate_scores(self, quotations: List[VendorQuotation], weights: ScoringWeights) -> List[VendorScore]:

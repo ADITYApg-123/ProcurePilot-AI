@@ -31,6 +31,7 @@ export interface ProcurementAnalysis {
   cost_comparison: Record<string, number>;
   warranty_comparison: Record<string, number>;
   delivery_comparison: Record<string, number>;
+  confidence_scores: Record<string, Record<string, number>>;
 }
 
 export interface JobResponse {

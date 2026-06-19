@@ -85,6 +85,7 @@ class ProcurementAnalysis(BaseModel):
     cost_comparison: dict  # vendor_name -> grand_total
     warranty_comparison: dict  # vendor_name -> warranty_months
     delivery_comparison: dict  # vendor_name -> delivery_days
+    confidence_scores: dict  # vendor_name -> dict of field_name -> confidence score
 
 
 # ── Copilot ─────────────────────────────────────────────────────────────────────

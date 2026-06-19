@@ -44,6 +44,7 @@ class DocumentExtractor:
         Extract all commercial and technical details accurately.
         If a field is missing in the document, leave it empty or null (do not guess).
         Pay special attention to the pricing, tax, warranty, and delivery terms.
+        CRITICAL: For every field you extract, you MUST provide a confidence score (0-100) in the `confidence_scores` dictionary. 100 means you found it explicitly in the text, 50 means it was ambiguous or inferred, 0 means missing.
         """
 
         @retry(

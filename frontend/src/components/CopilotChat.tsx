@@ -98,30 +98,30 @@ export function CopilotChat({ jobId, analysis }: Props) {
 
   return (
     <div className="copilot-wrapper animate-fade-in">
-      <Card className="copilot-container">
+      <Card className="copilot-container tour-step-copilot">
         <div className="copilot-header">
-        <Bot size={24} className="text-accent" />
-        <h3>Procurement Copilot</h3>
-      </div>
-      
-      <div className="negotiation-prompts">
-        <p>Quick Actions:</p>
-        <div className="prompt-buttons">
-          {analysis.vendor_scores.map(v => (
-            <button 
-              key={v.vendor_name}
-              className="prompt-chip"
-              onClick={() => handleGenerateNegotiation(v.vendor_name)}
-              disabled={!!isGeneratingNegotiation}
-            >
-              <FileText size={14} />
-              Negotiate with {v.vendor_name}
-            </button>
-          ))}
+          <Bot size={24} className="text-accent" />
+          <h3>Procurement Copilot</h3>
         </div>
-      </div>
+      
+        <div className="negotiation-prompts">
+          <p>Quick Actions:</p>
+          <div className="prompt-buttons">
+            {analysis.vendor_scores.map(v => (
+              <button 
+                key={v.vendor_name}
+                className="prompt-chip"
+                onClick={() => handleGenerateNegotiation(v.vendor_name)}
+                disabled={!!isGeneratingNegotiation}
+              >
+                <FileText size={14} />
+                Negotiate with {v.vendor_name}
+              </button>
+            ))}
+          </div>
+        </div>
 
-      <div className="chat-history">
+        <div className="chat-history">
         {messages.map(msg => (
           <div key={msg.id} className={`message-wrapper ${msg.role}`}>
             <div className="message-avatar">
