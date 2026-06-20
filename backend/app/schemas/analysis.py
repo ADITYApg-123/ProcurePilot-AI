@@ -63,6 +63,23 @@ class RiskFlag(BaseModel):
     level: RiskLevel
 
 
+# ── Clause Risk Analysis ─────────────────────────────────────────────────────────
+
+class ClauseRisk(BaseModel):
+    """A single extracted contractual clause with its deterministic risk grade."""
+    extracted_value: str  # Human-readable extracted text, e.g. "50% advance before manufacturing"
+    risk_level: RiskLevel
+    note: Optional[str] = None  # Optional explanation of why this is risky
+
+
+class VendorClauseAnalysis(BaseModel):
+    """Full clause analysis for one vendor across all 4 clause categories."""
+    payment_terms: ClauseRisk
+    penalty: ClauseRisk
+    liability: ClauseRisk
+    force_majeure: ClauseRisk
+
+
 # ── Analysis Results ────────────────────────────────────────────────────────────
 
 class SavingsOpportunity(BaseModel):
@@ -87,6 +104,7 @@ class ProcurementAnalysis(BaseModel):
     warranty_comparison: dict  # vendor_name -> warranty_months
     delivery_comparison: dict  # vendor_name -> delivery_days
     confidence_scores: dict  # vendor_name -> dict of field_name -> confidence score
+    contract_analysis: Optional[dict] = None  # vendor_name -> VendorClauseAnalysis (serialized)
 
 
 # ── Copilot ─────────────────────────────────────────────────────────────────────

@@ -11,7 +11,9 @@ from app.schemas.analysis import (
     RiskFlag,
     RiskLevel,
     SavingsOpportunity,
-    ScoringWeights
+    ScoringWeights,
+    ClauseRisk,
+    VendorClauseAnalysis,
 )
 from app.config import settings
 
@@ -49,6 +51,9 @@ class AnalysisEngine:
         # 4. Recommendation Reason (Deterministic)
         rec_reason = self._generate_reason(vendor_scores[0], quotations)
         
+        # 5. Clause Risk Matrix
+        contract_analysis = self._analyze_clauses(quotations)
+
         return ProcurementAnalysis(
             vendor_scores=vendor_scores,
             recommended_vendor=recommended_vendor,
@@ -58,7 +63,8 @@ class AnalysisEngine:
             cost_comparison=cost_comparison,
             warranty_comparison=warranty_comparison,
             delivery_comparison=delivery_comparison,
-            confidence_scores=confidence_scores
+            confidence_scores=confidence_scores,
+            contract_analysis=contract_analysis,
         )
 
     def _calculate_scores(self, quotations: List[VendorQuotation], weights: ScoringWeights) -> List[VendorScore]:
@@ -170,5 +176,127 @@ class AnalysisEngine:
             return f"{top_score.vendor_name} achieved the highest overall balanced score across cost, warranty, and delivery."
             
         return f"{top_score.vendor_name} is recommended due to its " + " and ".join(reasons) + "."
+
+    def _analyze_clauses(self, quotations: List[VendorQuotation]) -> dict:
+        """
+        Deterministic clause risk grader.
+        Takes the AI-extracted ContractClauses and applies clear thresholds to produce
+        a traffic-light risk level for each clause category per vendor.
+        """
+        result = {}
+        for q in quotations:
+            cc = q.contract_clauses
+
+            # ── Payment Terms ────────────────────────────────────────────────
+            # 0 days = advance required = HIGH risk for buyer
+            # 1-7 days = very short window = MEDIUM risk
+            # 8+ days = acceptable = LOW risk
+            if cc is None or cc.payment_terms_days is None:
+                payment = ClauseRisk(
+                    extracted_value="Not specified",
+                    risk_level=RiskLevel.MEDIUM,
+                    note="Payment terms not explicitly stated in the quotation."
+                )
+            elif cc.payment_terms_days == 0:
+                payment = ClauseRisk(
+                    extracted_value="100% / Advance required before start",
+                    risk_level=RiskLevel.HIGH,
+                    note="Full or majority advance payment required before manufacturing begins. Highest buyer risk."
+                )
+            elif cc.payment_terms_days <= 7:
+                payment = ClauseRisk(
+                    extracted_value=f"Net {cc.payment_terms_days} days (very short window)",
+                    risk_level=RiskLevel.MEDIUM,
+                    note=f"First payment due within {cc.payment_terms_days} days of PO — tight window."
+                )
+            else:
+                payment = ClauseRisk(
+                    extracted_value=f"Net {cc.payment_terms_days} days from milestone",
+                    risk_level=RiskLevel.LOW,
+                    note=f"First payment not required until {cc.payment_terms_days} days after a delivery/commissioning milestone."
+                )
+
+            # ── Penalty / LD ─────────────────────────────────────────────────
+            # High penalty = LOW risk for buyer (vendor is incentivised to deliver on time)
+            # Low penalty = HIGH risk for buyer (vendor has little consequence for delay)
+            # No penalty = HIGH risk
+            if cc is None or cc.penalty_pct_per_week is None:
+                penalty = ClauseRisk(
+                    extracted_value="Not specified",
+                    risk_level=RiskLevel.HIGH,
+                    note="No Liquidated Damages clause found. Buyer has no financial recourse for delays."
+                )
+            elif cc.penalty_pct_per_week >= 0.5:
+                penalty = ClauseRisk(
+                    extracted_value=f"{cc.penalty_pct_per_week:.2f}% of contract value per week",
+                    risk_level=RiskLevel.LOW,
+                    note="Strong LD clause — vendor has significant financial incentive to deliver on time."
+                )
+            elif cc.penalty_pct_per_week >= 0.2:
+                penalty = ClauseRisk(
+                    extracted_value=f"{cc.penalty_pct_per_week:.2f}% of contract value per week",
+                    risk_level=RiskLevel.MEDIUM,
+                    note="Moderate LD rate. Provides some recourse but may not fully compensate buyer for delays."
+                )
+            else:
+                penalty = ClauseRisk(
+                    extracted_value=f"{cc.penalty_pct_per_week:.2f}% of contract value per week",
+                    risk_level=RiskLevel.HIGH,
+                    note="Very low LD rate. Minimal deterrent for the vendor to delay delivery."
+                )
+
+            # ── Liability Cap ────────────────────────────────────────────────
+            # Capped = protects vendor = MEDIUM risk for buyer (some protection, but limited)
+            # Uncapped = full exposure = LOW risk for buyer (buyer can recover full losses)
+            # No clause = ambiguous = HIGH risk
+            if cc is None or cc.liability_capped is None:
+                liability = ClauseRisk(
+                    extracted_value="Not specified",
+                    risk_level=RiskLevel.HIGH,
+                    note="No liability clause found. Legal exposure is ambiguous."
+                )
+            elif cc.liability_capped:
+                liability = ClauseRisk(
+                    extracted_value="Capped (finite limit stated)",
+                    risk_level=RiskLevel.MEDIUM,
+                    note="Vendor's liability is capped. Buyer's recovery is limited if losses exceed the cap."
+                )
+            else:
+                liability = ClauseRisk(
+                    extracted_value="Uncapped / Unlimited",
+                    risk_level=RiskLevel.LOW,
+                    note="No cap on vendor's liability. Buyer has maximum legal recourse."
+                )
+
+            # ── Force Majeure ─────────────────────────────────────────────────
+            # Present = vendor can escape liability for some events = MEDIUM risk
+            # Absent = vendor has no FM escape = LOW risk for buyer
+            if cc is None or cc.force_majeure_included is None:
+                force_majeure = ClauseRisk(
+                    extracted_value="Not specified",
+                    risk_level=RiskLevel.MEDIUM,
+                    note="Force majeure clause not clearly stated."
+                )
+            elif cc.force_majeure_included:
+                force_majeure = ClauseRisk(
+                    extracted_value="Included",
+                    risk_level=RiskLevel.MEDIUM,
+                    note="Vendor can cite force majeure to avoid penalties for some delay events."
+                )
+            else:
+                force_majeure = ClauseRisk(
+                    extracted_value="Not included",
+                    risk_level=RiskLevel.LOW,
+                    note="No force majeure escape clause. Vendor is liable for all delays regardless of cause."
+                )
+
+            result[q.vendor_name] = VendorClauseAnalysis(
+                payment_terms=payment,
+                penalty=penalty,
+                liability=liability,
+                force_majeure=force_majeure,
+            ).model_dump()
+
+        return result
 
 analysis_engine = AnalysisEngine()

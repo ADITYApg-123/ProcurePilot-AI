@@ -1,8 +1,8 @@
 "use client";
 
 import React from 'react';
-import { Trophy, AlertTriangle, TrendingDown, DollarSign, Clock, ShieldCheck, Download, Zap, ShieldAlert, CheckCircle } from 'lucide-react';
-import { ProcurementAnalysis, RiskFlag } from '../services/types';
+import { Trophy, AlertTriangle, TrendingDown, DollarSign, Clock, ShieldCheck, Download, Zap, ShieldAlert, CheckCircle, FileText } from 'lucide-react';
+import { ProcurementAnalysis, RiskFlag, VendorClauseAnalysis, ClauseRisk, RiskLevel } from '../services/types';
 import { Card } from './ui/Card';
 import { Badge } from './ui/Badge';
 import { ConfidenceBar } from './ui/ConfidenceBar';
@@ -298,6 +298,78 @@ export function AnalysisDashboard({ jobId, analysis }: Props) {
           </Card>
         </div>
       </div>
+
+      {/* Clause Risk Matrix */}
+      {displayAnalysis.contract_analysis && (() => {
+        const vendors = displayAnalysis.vendor_scores.map(s => s.vendor_name);
+        const clauses: { key: keyof VendorClauseAnalysis; label: string; description: string }[] = [
+          { key: 'payment_terms', label: 'Payment Terms', description: 'When does the first payment fall due?' },
+          { key: 'penalty',       label: 'Penalty / LD Clause', description: 'How much does the vendor pay for late delivery?' },
+          { key: 'liability',     label: 'Liability Cap', description: 'Is the vendor\'s financial exposure capped?' },
+          { key: 'force_majeure', label: 'Force Majeure', description: 'Can the vendor escape penalties by citing external events?' },
+        ];
+        const riskIcon = (level: RiskLevel) =>
+          level === 'HIGH' ? '🔴' : level === 'MEDIUM' ? '🟡' : '🟢';
+
+        return (
+          <div className="clause-matrix-section">
+            <h3>
+              <FileText size={20} style={{ display: 'inline', marginRight: 8, color: 'var(--accent-primary)' }} />
+              Contract Clause Risk Matrix
+            </h3>
+            <div className="clause-legend">
+              <span><span className="legend-dot high"></span> High Risk (buyer exposed)</span>
+              <span><span className="legend-dot medium"></span> Medium Risk (some exposure)</span>
+              <span><span className="legend-dot low"></span> Low Risk (buyer protected)</span>
+            </div>
+            <Card className="table-card">
+              <div className="table-responsive">
+                <table className="clause-table">
+                  <thead>
+                    <tr>
+                      <th>Clause</th>
+                      {vendors.map(v => (
+                        <th key={v} className={v === displayAnalysis.recommended_vendor ? 'highlight-col' : ''}>
+                          {v}
+                          {v === displayAnalysis.recommended_vendor && (
+                            <span style={{ marginLeft: 8, fontSize: '0.75rem', background: '#dcfce7', color: '#15803d', padding: '2px 8px', borderRadius: 12, fontWeight: 700 }}>Winner</span>
+                          )}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {clauses.map(({ key, label, description }) => (
+                      <tr key={key}>
+                        <td className="clause-row-label">
+                          {label}
+                          <small>{description}</small>
+                        </td>
+                        {vendors.map(v => {
+                          const ca = displayAnalysis.contract_analysis![v];
+                          const clause: ClauseRisk = ca ? ca[key] : { extracted_value: 'N/A', risk_level: 'MEDIUM' };
+                          const lvl = clause.risk_level.toLowerCase();
+                          return (
+                            <td key={v} className={`clause-cell ${v === displayAnalysis.recommended_vendor ? 'clause-col-highlight' : ''}`}>
+                              <div className="clause-cell-inner">
+                                <span className={`clause-badge ${lvl}`}>
+                                  {riskIcon(clause.risk_level)} {clause.risk_level}
+                                </span>
+                                <span className="clause-value">{clause.extracted_value}</span>
+                                {clause.note && <span className="clause-note">{clause.note}</span>}
+                              </div>
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </Card>
+          </div>
+        );
+      })()}
     </div>
   );
 }
