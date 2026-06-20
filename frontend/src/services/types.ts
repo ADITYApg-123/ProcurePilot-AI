@@ -7,6 +7,21 @@ export interface VendorScore {
   rank: number;
 }
 
+export type RiskLevel = 'LOW' | 'MEDIUM' | 'HIGH';
+
+export interface ClauseRisk {
+  extracted_value: string;
+  risk_level: RiskLevel;
+  note?: string;
+}
+
+export interface VendorClauseAnalysis {
+  payment_terms: ClauseRisk;
+  penalty: ClauseRisk;
+  liability: ClauseRisk;
+  force_majeure: ClauseRisk;
+}
+
 export interface RiskFlag {
   vendor_name: string;
   risk_type: string;
@@ -32,6 +47,7 @@ export interface ProcurementAnalysis {
   warranty_comparison: Record<string, number>;
   delivery_comparison: Record<string, number>;
   confidence_scores: Record<string, Record<string, number>>;
+  contract_analysis?: Record<string, VendorClauseAnalysis>;
 }
 
 export interface JobResponse {

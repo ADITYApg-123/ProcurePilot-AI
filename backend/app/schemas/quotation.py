@@ -8,6 +8,63 @@ from pydantic import BaseModel, Field
 from typing import Optional
 
 
+class ContractClauses(BaseModel):
+    """
+    Structured extraction of contractual / legal clause data from the quotation.
+    Each field must be inferred from the T&C text, even if buried in dense legal language.
+    """
+    # Payment terms — how many days after PO until first payment is required.
+    # 0 means 100% advance before any work starts.
+    # Use the FIRST tranche due date as the reference point.
+    payment_terms_days: Optional[int] = Field(
+        None,
+        description=(
+            "The number of calendar days after Purchase Order issuance by which the FIRST payment tranche "
+            "is due. If the first tranche is required BEFORE or ON the same day as PO (advance/mobilisation), "
+            "set this to 0. If payment is due Net 30 from delivery, set to 30 (approximately). "
+            "Do not include subsequent tranches — only the first. If absent, return null."
+        )
+    )
+
+    # Penalty / Liquidated Damages — effective weekly rate as a percentage of contract value.
+    # Must be computed from the formula if given in a complex tiered/tranche structure.
+    penalty_pct_per_week: Optional[float] = Field(
+        None,
+        description=(
+            "The effective Liquidated Damages (LD) rate expressed as a PERCENTAGE of the total contract value "
+            "PER WEEK, for the FIRST tier of delays (i.e., excluding escalation tiers). "
+            "If given as 'X% per 3 calendar days', convert: weekly_rate = (X / 3) * 7. "
+            "If given as a flat daily amount (e.g. INR 5,000/day) rather than a percentage, "
+            "compute the effective rate as: (daily_amount * 7) / total_contract_value * 100. "
+            "If there is a grace period (e.g., first 7 days no LD), use the rate that applies after the grace period. "
+            "If no penalty clause exists, return null."
+        )
+    )
+
+    # Liability cap — is the vendor's total liability capped at a finite amount?
+    liability_capped: Optional[bool] = Field(
+        None,
+        description=(
+            "True if the vendor's aggregate liability is explicitly capped at a finite amount (e.g., 100% of PO value, "
+            "150% of PO value, etc.). False if the contract contains NO liability cap or if the cap is conditional "
+            "and can be entirely lifted (e.g., uncapped in safety incidents). "
+            "Note: if the cap is normally capped but expands only for extreme safety events (personal injury, fire), "
+            "still return True — the standard cap exists. If completely uncapped, return False."
+        )
+    )
+
+    # Force majeure — is a force majeure clause present?
+    force_majeure_included: Optional[bool] = Field(
+        None,
+        description=(
+            "True if the vendor's terms include a force majeure (FM) clause that protects the vendor from liability "
+            "for delays caused by events beyond their control. Return False only if there is NO force majeure clause "
+            "whatsoever. Note: a narrowly defined FM clause (e.g., only acts of God, not supply chain issues) "
+            "still counts as True — evaluate its presence, not its breadth."
+        )
+    )
+
+
 class ProductItem(BaseModel):
     """A single product/line item from a vendor quotation."""
 
@@ -59,6 +116,12 @@ class VendorQuotation(BaseModel):
 
     # Additional
     special_conditions: Optional[str] = Field(None, description="Any special terms, notes, or conditions")
+
+    # Contract Clause Extraction (for Clause Risk Matrix)
+    contract_clauses: Optional[ContractClauses] = Field(
+        None,
+        description="Structured extraction of key contractual clauses from the Terms & Conditions section."
+    )
 
     # Extraction Confidence
     confidence_scores: FieldConfidence = Field(
