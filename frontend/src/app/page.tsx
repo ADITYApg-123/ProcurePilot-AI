@@ -161,6 +161,7 @@ export default function Home() {
               <CopilotChat 
                 jobId={jobId!} 
                 analysis={analysis} 
+                originalAnalysis={originalAnalysis}
                 onSimulate={handleSimulate} 
                 onResetSimulations={handleResetSimulations}
                 isSimulated={analysis !== originalAnalysis && JSON.stringify(analysis) !== JSON.stringify(originalAnalysis)}
