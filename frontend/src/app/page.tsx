@@ -13,6 +13,7 @@ export default function Home() {
   const [jobId, setJobId] = useState<string | null>(null);
   const [jobStatus, setJobStatus] = useState<JobResponse | null>(null);
   const [analysis, setAnalysis] = useState<ProcurementAnalysis | null>(null);
+  const [originalAnalysis, setOriginalAnalysis] = useState<ProcurementAnalysis | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [isWarming, setIsWarming] = useState(false);
 
@@ -46,6 +47,7 @@ export default function Home() {
           setJobStatus(res);
           if (res.status === 'COMPLETED' && res.result) {
             setAnalysis(res.result);
+            setOriginalAnalysis(JSON.parse(JSON.stringify(res.result)));
             clearInterval(interval);
           } else if (res.status === 'FAILED') {
             setUploadError(res.progress_message || 'Extraction failed.');
@@ -75,7 +77,9 @@ export default function Home() {
       // Need to type assert or handle default import correctly
       const demoData = (await import('../data/demoAnalysis.json')) as any;
       setJobId('demo-job-123');
-      setAnalysis(demoData.default || demoData);
+      const loadedData = demoData.default || demoData;
+      setAnalysis(loadedData);
+      setOriginalAnalysis(JSON.parse(JSON.stringify(loadedData)));
     } catch (err) {
       console.error('Failed to load demo data', err);
       setUploadError('Failed to load demo data.');
@@ -86,6 +90,7 @@ export default function Home() {
     setJobId(null);
     setJobStatus(null);
     setAnalysis(null);
+    setOriginalAnalysis(null);
     setUploadError(null);
   };
 
@@ -101,6 +106,12 @@ export default function Home() {
     // Update the global state. AnalysisDashboard will automatically catch this
     // and re-run recalculateScores with the current slider weights!
     setAnalysis(newAnalysis);
+  };
+
+  const handleResetSimulations = () => {
+    if (originalAnalysis) {
+      setAnalysis(JSON.parse(JSON.stringify(originalAnalysis)));
+    }
   };
 
   return (
@@ -147,7 +158,13 @@ export default function Home() {
               <AnalysisDashboard jobId={jobId!} analysis={analysis} />
             </div>
             <div className="sidebar-content">
-              <CopilotChat jobId={jobId!} analysis={analysis} onSimulate={handleSimulate} />
+              <CopilotChat 
+                jobId={jobId!} 
+                analysis={analysis} 
+                onSimulate={handleSimulate} 
+                onResetSimulations={handleResetSimulations}
+                isSimulated={analysis !== originalAnalysis && JSON.stringify(analysis) !== JSON.stringify(originalAnalysis)}
+              />
             </div>
           </div>
         )}

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Bot, User, FileText, Calculator } from 'lucide-react';
+import { Send, Bot, User, FileText, Calculator, RotateCcw } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { Card } from './ui/Card';
 import { Spinner } from './ui/Spinner';
@@ -20,9 +20,11 @@ interface Props {
   jobId: string;
   analysis: ProcurementAnalysis;
   onSimulate?: (vendorName: string, newCost: number) => void;
+  onResetSimulations?: () => void;
+  isSimulated?: boolean;
 }
 
-export function CopilotChat({ jobId, analysis, onSimulate }: Props) {
+export function CopilotChat({ jobId, analysis, onSimulate, onResetSimulations, isSimulated }: Props) {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 'welcome',
@@ -142,6 +144,25 @@ export function CopilotChat({ jobId, analysis, onSimulate }: Props) {
     }, 1200); // Artificial delay to simulate thinking
   };
 
+  const handleReset = () => {
+    if (onResetSimulations) {
+      onResetSimulations();
+      setMessages(prev => [
+        ...prev,
+        {
+          id: Date.now().toString(),
+          role: 'user',
+          content: `Reset all simulations to baseline.`
+        },
+        {
+          id: (Date.now() + 1).toString(),
+          role: 'assistant',
+          content: `All simulations cleared. The dashboard is now showing the original extracted baseline data.`
+        }
+      ]);
+    }
+  };
+
 
   return (
     <div className="copilot-wrapper animate-fade-in">
@@ -172,6 +193,15 @@ export function CopilotChat({ jobId, analysis, onSimulate }: Props) {
           <div className="simulator-header">
             <Calculator size={16} className="text-accent" />
             <h4>Negotiation Simulator</h4>
+            {isSimulated && (
+              <button 
+                className="btn-reset-sim" 
+                onClick={handleReset} 
+                title="Reset to Baseline"
+              >
+                <RotateCcw size={14} />
+              </button>
+            )}
           </div>
           <div className="simulator-controls">
             <select 
