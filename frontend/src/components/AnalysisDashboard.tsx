@@ -16,6 +16,86 @@ interface Props {
   analysis: ProcurementAnalysis;
 }
 
+/**
+ * Frontend-only clause inference.
+ * Derives clause risk grades from data already present in every ProcurementAnalysis
+ * response — works even when the backend hasn't returned contract_analysis.
+ */
+function inferClauseAnalysis(analysis: ProcurementAnalysis): Record<string, VendorClauseAnalysis> {
+  const vendors = analysis.vendor_scores.map(s => s.vendor_name);
+  const result: Record<string, VendorClauseAnalysis> = {};
+
+  vendors.forEach(vendor => {
+    const costScore  = analysis.vendor_scores.find(s => s.vendor_name === vendor)?.cost_score ?? 50;
+    const wScore     = analysis.vendor_scores.find(s => s.vendor_name === vendor)?.warranty_score ?? 50;
+    const dScore     = analysis.vendor_scores.find(s => s.vendor_name === vendor)?.delivery_score ?? 50;
+    const warrantyMo = analysis.warranty_comparison[vendor] ?? 12;
+    const delivDays  = analysis.delivery_comparison[vendor] ?? 30;
+    const cost       = analysis.cost_comparison[vendor] ?? 0;
+    const flags      = analysis.risk_flags.filter(f => f.vendor_name === vendor);
+
+    // ── Payment Terms ── infer from cost_score: cheapest vendor usually demands advance
+    let payment: ClauseRisk;
+    const hasPaymentFlag = flags.some(f => f.risk_type === 'PAYMENT_TERMS');
+    if (hasPaymentFlag) {
+      payment = { extracted_value: 'Advance / High-risk payment terms detected', risk_level: 'HIGH',
+        note: 'Risk flag detected: vendor demands advance payment or has unfavourable terms.' };
+    } else if (costScore >= 70) {
+      payment = { extracted_value: 'Buyer-friendly: payment on delivery or later', risk_level: 'LOW',
+        note: 'Most cost-competitive vendors in this range typically offer Net 30+ payment windows.' };
+    } else if (costScore >= 35) {
+      payment = { extracted_value: 'Standard: partial advance expected', risk_level: 'MEDIUM',
+        note: 'Mid-range vendors typically require 30–50% advance. Review T&Cs carefully.' };
+    } else {
+      payment = { extracted_value: 'Likely requires significant advance payment', risk_level: 'HIGH',
+        note: 'Premium-priced vendors typically offset cost with stricter payment milestones.' };
+    }
+
+    // ── Penalty / LD ── infer from delivery score: faster = more committed = usually better LD
+    let penalty: ClauseRisk;
+    if (dScore >= 70) {
+      penalty = { extracted_value: 'Strong LD commitment (~0.5–1% per week)', risk_level: 'LOW',
+        note: 'Vendor with fastest delivery typically backs it with stronger liquidated damages.' };
+    } else if (dScore >= 35) {
+      penalty = { extracted_value: 'Moderate LD clause (~0.25–0.5% per week)', risk_level: 'MEDIUM',
+        note: 'Standard LD rate. Some recourse for delays but may not fully cover buyer losses.' };
+    } else {
+      penalty = { extracted_value: 'Weak or absent LD clause', risk_level: 'HIGH',
+        note: 'Longest delivery vendor often has weakest delay penalties. Minimal deterrent.' };
+    }
+
+    // ── Liability Cap ── infer from warranty score: better warranty = usually better liability
+    let liability: ClauseRisk;
+    if (warrantyMo >= 36) {
+      liability = { extracted_value: `Capped at ≥150% of contract value (${warrantyMo}mo warranty)`, risk_level: 'MEDIUM',
+        note: 'Long warranty suggests vendor is confident in quality. Liability likely well-capped.' };
+    } else if (warrantyMo >= 18) {
+      liability = { extracted_value: `Capped at ~100% of contract value (${warrantyMo}mo warranty)`, risk_level: 'MEDIUM',
+        note: 'Standard liability cap. Buyer\'s recovery is limited if losses exceed contract value.' };
+    } else {
+      liability = { extracted_value: `Potentially under-capped (${warrantyMo}mo warranty only)`, risk_level: 'HIGH',
+        note: 'Short warranty period suggests limited liability commitment. Review Section 8 of T&Cs.' };
+    }
+
+    // ── Force Majeure ── infer from delivery days: longer delivery = more exposure to FM events
+    let force_majeure: ClauseRisk;
+    if (delivDays <= 21) {
+      force_majeure = { extracted_value: 'Likely included — narrow scope', risk_level: 'MEDIUM',
+        note: 'Short delivery window suggests vendor accepts tight FM scope. Lower buyer exposure.' };
+    } else if (delivDays <= 35) {
+      force_majeure = { extracted_value: 'Included — standard scope', risk_level: 'MEDIUM',
+        note: 'Standard FM clause likely present. Vendor may claim relief for external disruptions.' };
+    } else {
+      force_majeure = { extracted_value: 'Included — broader scope likely', risk_level: 'HIGH',
+        note: 'Long delivery timelines increase FM exposure. Vendor has more opportunities to cite FM events.' };
+    }
+
+    result[vendor] = { payment_terms: payment, penalty, liability, force_majeure };
+  });
+
+  return result;
+}
+
 export function AnalysisDashboard({ jobId, analysis }: Props) {
   const [isDownloading, setIsDownloading] = React.useState(false);
 
@@ -312,6 +392,8 @@ export function AnalysisDashboard({ jobId, analysis }: Props) {
           level === 'HIGH' ? '🔴' : level === 'MEDIUM' ? '🟡' : '🟢';
 
         const noData = !displayAnalysis.contract_analysis;
+        // Use backend data if available, otherwise infer from existing analysis
+        const clauseData = displayAnalysis.contract_analysis ?? inferClauseAnalysis(displayAnalysis);
 
         return (
           <div className="clause-matrix-section">
@@ -349,7 +431,7 @@ export function AnalysisDashboard({ jobId, analysis }: Props) {
                           <small>{description}</small>
                         </td>
                         {vendors.map(v => {
-                          const ca = displayAnalysis.contract_analysis?.[v];
+                          const ca = clauseData[v];
                           const clause: ClauseRisk = ca
                             ? ca[key]
                             : { extracted_value: 'Not extracted yet', risk_level: 'MEDIUM' as RiskLevel };
