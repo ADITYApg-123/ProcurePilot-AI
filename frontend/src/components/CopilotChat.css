@@ -235,9 +235,9 @@
 }
 
 .btn-reset-sim {
-  background: transparent;
-  color: var(--text-muted);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 6px;
   padding: 4px 6px;
   display: flex;
@@ -248,8 +248,8 @@
 }
 
 .btn-reset-sim:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
 }
 
 .simulator-controls {
