@@ -299,17 +299,19 @@ export function AnalysisDashboard({ jobId, analysis }: Props) {
         </div>
       </div>
 
-      {/* Clause Risk Matrix */}
-      {displayAnalysis.contract_analysis && (() => {
+      {/* Clause Risk Matrix — always shown, graceful fallback when data unavailable */}
+      {(() => {
         const vendors = displayAnalysis.vendor_scores.map(s => s.vendor_name);
         const clauses: { key: keyof VendorClauseAnalysis; label: string; description: string }[] = [
-          { key: 'payment_terms', label: 'Payment Terms', description: 'When does the first payment fall due?' },
+          { key: 'payment_terms', label: 'Payment Terms',      description: 'When does the first payment fall due?' },
           { key: 'penalty',       label: 'Penalty / LD Clause', description: 'How much does the vendor pay for late delivery?' },
-          { key: 'liability',     label: 'Liability Cap', description: 'Is the vendor\'s financial exposure capped?' },
-          { key: 'force_majeure', label: 'Force Majeure', description: 'Can the vendor escape penalties by citing external events?' },
+          { key: 'liability',     label: 'Liability Cap',       description: "Is the vendor's financial exposure capped?" },
+          { key: 'force_majeure', label: 'Force Majeure',       description: 'Can the vendor escape penalties by citing external events?' },
         ];
         const riskIcon = (level: RiskLevel) =>
           level === 'HIGH' ? '🔴' : level === 'MEDIUM' ? '🟡' : '🟢';
+
+        const noData = !displayAnalysis.contract_analysis;
 
         return (
           <div className="clause-matrix-section">
@@ -321,6 +323,7 @@ export function AnalysisDashboard({ jobId, analysis }: Props) {
               <span><span className="legend-dot high"></span> High Risk (buyer exposed)</span>
               <span><span className="legend-dot medium"></span> Medium Risk (some exposure)</span>
               <span><span className="legend-dot low"></span> Low Risk (buyer protected)</span>
+              {noData && <span style={{ marginLeft: 'auto', color: 'var(--text-muted)', fontStyle: 'italic', fontSize: '0.82rem' }}>⚠ Re-upload PDFs to extract clause data</span>}
             </div>
             <Card className="table-card">
               <div className="table-responsive">
@@ -346,8 +349,10 @@ export function AnalysisDashboard({ jobId, analysis }: Props) {
                           <small>{description}</small>
                         </td>
                         {vendors.map(v => {
-                          const ca = displayAnalysis.contract_analysis![v];
-                          const clause: ClauseRisk = ca ? ca[key] : { extracted_value: 'N/A', risk_level: 'MEDIUM' };
+                          const ca = displayAnalysis.contract_analysis?.[v];
+                          const clause: ClauseRisk = ca
+                            ? ca[key]
+                            : { extracted_value: 'Not extracted yet', risk_level: 'MEDIUM' as RiskLevel };
                           const lvl = clause.risk_level.toLowerCase();
                           return (
                             <td key={v} className={`clause-cell ${v === displayAnalysis.recommended_vendor ? 'clause-col-highlight' : ''}`}>

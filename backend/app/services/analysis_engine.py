@@ -191,29 +191,45 @@ class AnalysisEngine:
             # 0 days = advance required = HIGH risk for buyer
             # 1-7 days = very short window = MEDIUM risk
             # 8+ days = acceptable = LOW risk
-            if cc is None or cc.payment_terms_days is None:
+            pt_days = cc.payment_terms_days if cc else None
+
+            # Fallback: parse the plain-text payment_terms field if cc is unavailable
+            if pt_days is None and q.payment_terms:
+                pt_lower = q.payment_terms.lower()
+                if any(w in pt_lower for w in ["advance", "100%", "upfront", "mobilisation", "mobilization", "before manufacturing", "prior to"]):
+                    pt_days = 0
+                elif "net 60" in pt_lower or "60 days" in pt_lower:
+                    pt_days = 60
+                elif "net 45" in pt_lower or "45 days" in pt_lower:
+                    pt_days = 45
+                elif "net 30" in pt_lower or "30 days" in pt_lower:
+                    pt_days = 30
+                elif "net 15" in pt_lower or "15 days" in pt_lower:
+                    pt_days = 15
+
+            if pt_days is None:
                 payment = ClauseRisk(
                     extracted_value="Not specified",
                     risk_level=RiskLevel.MEDIUM,
                     note="Payment terms not explicitly stated in the quotation."
                 )
-            elif cc.payment_terms_days == 0:
+            elif pt_days == 0:
                 payment = ClauseRisk(
-                    extracted_value="100% / Advance required before start",
+                    extracted_value="Advance required before manufacturing",
                     risk_level=RiskLevel.HIGH,
                     note="Full or majority advance payment required before manufacturing begins. Highest buyer risk."
                 )
-            elif cc.payment_terms_days <= 7:
+            elif pt_days <= 7:
                 payment = ClauseRisk(
-                    extracted_value=f"Net {cc.payment_terms_days} days (very short window)",
+                    extracted_value=f"Net {pt_days} days (very short window)",
                     risk_level=RiskLevel.MEDIUM,
-                    note=f"First payment due within {cc.payment_terms_days} days of PO — tight window."
+                    note=f"First payment due within {pt_days} days of PO — tight window."
                 )
             else:
                 payment = ClauseRisk(
-                    extracted_value=f"Net {cc.payment_terms_days} days from milestone",
+                    extracted_value=f"Net {pt_days} days from milestone",
                     risk_level=RiskLevel.LOW,
-                    note=f"First payment not required until {cc.payment_terms_days} days after a delivery/commissioning milestone."
+                    note=f"First payment not required until {pt_days} days after a delivery/commissioning milestone."
                 )
 
             # ── Penalty / LD ─────────────────────────────────────────────────
