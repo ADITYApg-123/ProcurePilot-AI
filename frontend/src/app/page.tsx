@@ -89,6 +89,20 @@ export default function Home() {
     setUploadError(null);
   };
 
+  const handleSimulate = (vendorName: string, newCost: number) => {
+    if (!analysis) return;
+    
+    // Create a deep copy of the analysis to avoid direct mutation
+    const newAnalysis = JSON.parse(JSON.stringify(analysis)) as ProcurementAnalysis;
+    
+    // Update the cost
+    newAnalysis.cost_comparison[vendorName] = newCost;
+    
+    // Update the global state. AnalysisDashboard will automatically catch this
+    // and re-run recalculateScores with the current slider weights!
+    setAnalysis(newAnalysis);
+  };
+
   return (
     <main className="app-main">
       <header className="app-header">
@@ -133,7 +147,7 @@ export default function Home() {
               <AnalysisDashboard jobId={jobId!} analysis={analysis} />
             </div>
             <div className="sidebar-content">
-              <CopilotChat jobId={jobId!} analysis={analysis} />
+              <CopilotChat jobId={jobId!} analysis={analysis} onSimulate={handleSimulate} />
             </div>
           </div>
         )}
