@@ -19,12 +19,13 @@ interface Message {
 interface Props {
   jobId: string;
   analysis: ProcurementAnalysis;
+  originalAnalysis: ProcurementAnalysis | null;
   onSimulate?: (vendorName: string, newCost: number) => void;
   onResetSimulations?: () => void;
   isSimulated?: boolean;
 }
 
-export function CopilotChat({ jobId, analysis, onSimulate, onResetSimulations, isSimulated }: Props) {
+export function CopilotChat({ jobId, analysis, originalAnalysis, onSimulate, onResetSimulations, isSimulated }: Props) {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 'welcome',
@@ -112,12 +113,15 @@ export function CopilotChat({ jobId, analysis, onSimulate, onResetSimulations, i
   };
 
   const handleRunSimulation = () => {
-    if (!simVendor || !analysis.cost_comparison[simVendor]) return;
+    // ALWAYS use originalAnalysis for baseline math so discounts never stack
+    const baselineAnalysis = originalAnalysis || analysis;
+    
+    if (!simVendor || !baselineAnalysis.cost_comparison[simVendor]) return;
     if (!onSimulate) return;
 
-    const currentCost = analysis.cost_comparison[simVendor];
-    const savings = currentCost * (simDiscount / 100);
-    const newCost = currentCost - savings;
+    const originalCost = baselineAnalysis.cost_comparison[simVendor];
+    const savings = originalCost * (simDiscount / 100);
+    const newCost = originalCost - savings;
 
     // Add user message
     const userMessage: Message = { 
@@ -137,7 +141,7 @@ export function CopilotChat({ jobId, analysis, onSimulate, onResetSimulations, i
         {
           id: (Date.now() + 1).toString(),
           role: 'assistant',
-          content: `**Simulation Applied!** ⚡\n\nI've applied a ${simDiscount}% discount to ${simVendor}.\n- **Previous Cost:** ₹${currentCost.toLocaleString(undefined, {maximumFractionDigits:0})}\n- **Savings:** ₹${savings.toLocaleString(undefined, {maximumFractionDigits:0})}\n- **New Cost:** ₹${newCost.toLocaleString(undefined, {maximumFractionDigits:0})}\n\nThe main dashboard has been instantly updated to reflect this new price. Check the **What-If Scenario Engine** and **Vendor Comparison Matrix** to see if this discount changes the overall rankings!`
+          content: `**Simulation Applied!** ⚡\n\nI've applied a ${simDiscount}% discount to ${simVendor}'s **original quoted price**.\n- **Original Quoted Cost:** ₹${originalCost.toLocaleString(undefined, {maximumFractionDigits:0})}\n- **Savings:** ₹${savings.toLocaleString(undefined, {maximumFractionDigits:0})}\n- **New Cost:** ₹${newCost.toLocaleString(undefined, {maximumFractionDigits:0})}\n\nThe main dashboard has been instantly updated to reflect this new price. Check the **What-If Scenario Engine** and **Vendor Comparison Matrix** to see if this discount changes the overall rankings!`
         }
       ]);
       setIsTyping(false);
