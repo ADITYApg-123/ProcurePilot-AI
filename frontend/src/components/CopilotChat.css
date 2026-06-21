@@ -231,6 +231,25 @@
   font-size: 0.9rem;
   font-weight: 600;
   color: var(--text-primary);
+  flex: 1;
+}
+
+.btn-reset-sim {
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 4px 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-reset-sim:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
 }
 
 .simulator-controls {
