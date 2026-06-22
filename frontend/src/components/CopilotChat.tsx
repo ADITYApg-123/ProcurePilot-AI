@@ -193,7 +193,7 @@ export function CopilotChat({ jobId, analysis, originalAnalysis, onSimulate, onR
           </div>
         </div>
 
-        <div className="negotiation-simulator-panel">
+        <div className="negotiation-simulator-panel tour-step-simulator">
           <div className="simulator-header">
             <Calculator size={16} className="text-accent" />
             <h4>Negotiation Simulator</h4>

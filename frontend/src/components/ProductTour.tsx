@@ -50,8 +50,20 @@ export function ProductTour({ run }: ProductTourProps) {
       placement: 'top',
     },
     {
+      target: '.tour-step-clause-matrix',
+      content: 'The AI also extracts deep legal terms (like penalty caps and force majeure) and grades the enterprise risk factor of each clause.',
+      skipBeacon: true,
+      placement: 'top',
+    },
+    {
       target: '.tour-step-copilot',
       content: 'You can ask questions or test negotiation strategies with the Copilot here.',
+      skipBeacon: true,
+      placement: 'left',
+    },
+    {
+      target: '.tour-step-simulator',
+      content: 'Use the Negotiation Simulator to drop a vendor\'s price and watch the dashboard recalculate rankings and savings instantly!',
       skipBeacon: true,
       placement: 'left',
     }
