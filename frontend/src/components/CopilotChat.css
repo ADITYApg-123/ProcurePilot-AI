@@ -37,8 +37,20 @@
 
 .prompt-buttons {
   display: flex;
-  flex-wrap: wrap;
   gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-color) transparent;
+}
+
+.prompt-buttons::-webkit-scrollbar {
+  height: 4px;
+}
+
+.prompt-buttons::-webkit-scrollbar-thumb {
+  background-color: var(--border-color);
+  border-radius: 4px;
 }
 
 .prompt-chip {
@@ -47,6 +59,8 @@
   gap: 6px;
   background: rgba(37, 99, 235, 0.05);
   border: 1px solid rgba(37, 99, 235, 0.2);
+  white-space: nowrap;
+  flex-shrink: 0;
   color: var(--text-primary);
   padding: 6px 12px;
   border-radius: 999px;
@@ -212,8 +226,8 @@
 
 /* Negotiation Simulator Panel */
 .negotiation-simulator-panel {
-  background: rgba(15, 23, 42, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
   border-radius: 12px;
   padding: 12px 16px;
   margin-bottom: 16px;
@@ -235,9 +249,9 @@
 }
 
 .btn-reset-sim {
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--text-primary);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: var(--surface-color);
+  color: var(--text-muted);
+  border: 1px solid var(--border-color);
   border-radius: 6px;
   padding: 4px 6px;
   display: flex;
@@ -248,8 +262,8 @@
 }
 
 .btn-reset-sim:hover {
-  background: rgba(255, 255, 255, 0.15);
-  color: #fff;
+  background: var(--border-color);
+  color: var(--text-primary);
 }
 
 .simulator-controls {
@@ -260,8 +274,8 @@
 
 .sim-select {
   flex: 1;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
   color: var(--text-primary);
   border-radius: 8px;
   padding: 8px 12px;
@@ -275,15 +289,15 @@
 }
 
 .sim-select option {
-  background: #1e293b;
-  color: white;
+  background: var(--surface-color);
+  color: var(--text-primary);
 }
 
 .discount-input-wrapper {
   display: flex;
   align-items: center;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 4px 8px;
 }
