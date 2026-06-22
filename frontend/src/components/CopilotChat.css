@@ -339,7 +339,7 @@
 }
 
 .btn-simulate:hover:not(:disabled) {
-  background: var(--accent-hover);
+  background: var(--accent-secondary);
   transform: translateY(-1px);
 }
 
