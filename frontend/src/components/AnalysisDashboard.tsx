@@ -407,7 +407,7 @@ export function AnalysisDashboard({ jobId, analysis }: Props) {
               <span><span className="legend-dot low"></span> Low Risk (buyer protected)</span>
               {noData && <span style={{ marginLeft: 'auto', color: 'var(--text-muted)', fontStyle: 'italic', fontSize: '0.82rem' }}>⚠ Re-upload PDFs to extract clause data</span>}
             </div>
-            <Card className="table-card">
+            <Card className="table-card tour-step-clause-matrix">
               <div className="table-responsive">
                 <table className="clause-table">
                   <thead>
