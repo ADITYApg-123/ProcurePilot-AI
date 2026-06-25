@@ -5,6 +5,7 @@ import { UploadWorkspace } from '../components/UploadWorkspace';
 import { AnalysisDashboard } from '../components/AnalysisDashboard';
 import { CopilotChat } from '../components/CopilotChat';
 import { ProductTour } from '../components/ProductTour';
+import Link from 'next/link';
 import { apiClient } from '../services/apiClient';
 import { JobResponse, ProcurementAnalysis } from '../services/types';
 import './page.css';
@@ -121,7 +122,12 @@ export default function Home() {
           <div className="logo-mark"></div>
           <h1>ProcurePilot</h1>
         </div>
-        <div className="header-actions">
+        <div className="header-actions" style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+          <Link href="/help" style={{ textDecoration: 'none' }}>
+            <button className="btn-secondary" style={{ background: 'transparent', border: '1px solid transparent', boxShadow: 'none' }}>
+              Knowledge Base
+            </button>
+          </Link>
           {analysis && (
             <button className="header-back-btn" onClick={handleReset}>
               ← Start New Analysis

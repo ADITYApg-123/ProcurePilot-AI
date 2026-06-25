@@ -1,0 +1,146 @@
+.help-main {
+  background: var(--bg-color);
+  min-height: 100vh;
+  padding-top: 100px;
+}
+
+.help-container {
+  display: flex;
+  max-width: 1200px;
+  margin: 0 auto;
+  gap: 48px;
+  padding: 0 32px;
+  align-items: flex-start;
+}
+
+.help-sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 120px;
+}
+
+.help-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.help-nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.help-nav-btn:hover {
+  background: rgba(37, 99, 235, 0.05);
+  color: var(--accent-primary);
+}
+
+.help-nav-btn.active {
+  background: var(--surface-color);
+  color: var(--accent-primary);
+  border-color: var(--border-color);
+  box-shadow: var(--shadow-sm);
+}
+
+.help-content {
+  flex-grow: 1;
+  max-width: 800px;
+}
+
+.content-card {
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 48px;
+  box-shadow: var(--shadow-lg);
+}
+
+.content-card h2 {
+  font-size: 2rem;
+  color: var(--text-primary);
+  margin-bottom: 24px;
+  font-family: var(--font-heading);
+}
+
+.lead-text {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 40px;
+}
+
+.guide-section {
+  margin-bottom: 32px;
+}
+
+.guide-section h3 {
+  font-size: 1.25rem;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+
+.guide-section p {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+.tip-box {
+  background: var(--accent-glow);
+  border-left: 4px solid var(--accent-primary);
+  padding: 16px;
+  border-radius: 0 8px 8px 0;
+  color: var(--accent-secondary);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.faq-item {
+  margin-bottom: 32px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.faq-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.faq-item h4 {
+  font-size: 1.15rem;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+
+.faq-item p {
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.content-card p {
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+/* Animations */
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
