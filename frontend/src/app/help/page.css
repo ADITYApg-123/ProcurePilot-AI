@@ -5,11 +5,12 @@
 }
 
 .help-container {
+  grid-column: 2;
   display: flex;
-  max-width: 1200px;
+  max-width: 1400px;
+  width: 100%;
   margin: 0 auto;
   gap: 48px;
-  padding: 0 32px;
   align-items: flex-start;
 }
 
