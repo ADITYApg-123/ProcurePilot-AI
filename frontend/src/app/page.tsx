@@ -124,9 +124,13 @@ export default function Home() {
         </div>
         <div className="header-actions" style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
           <Link href="/help" style={{ textDecoration: 'none' }}>
-            <button className="btn-secondary" style={{ background: 'transparent', border: '1px solid transparent', boxShadow: 'none' }}>
-              Knowledge Base
-            </button>
+            <button className="btn-secondary" style={{ background: 'transparent', border: 'none', boxShadow: 'none', color: 'var(--text-secondary)' }}>Help</button>
+          </Link>
+          <Link href="/faq" style={{ textDecoration: 'none' }}>
+            <button className="btn-secondary" style={{ background: 'transparent', border: 'none', boxShadow: 'none', color: 'var(--text-secondary)' }}>FAQ</button>
+          </Link>
+          <Link href="/about" style={{ textDecoration: 'none' }}>
+            <button className="btn-secondary" style={{ background: 'transparent', border: 'none', boxShadow: 'none', color: 'var(--text-secondary)' }}>About</button>
           </Link>
           {analysis && (
             <button className="header-back-btn" onClick={handleReset}>
