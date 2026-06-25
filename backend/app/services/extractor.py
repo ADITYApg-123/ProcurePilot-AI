@@ -80,7 +80,18 @@ class DocumentExtractor:
 
         try:
             response = _generate()
-            quotation = VendorQuotation.model_validate_json(response.text)
+            
+            # Clean potential markdown wrapping from the response
+            raw_json = response.text.strip()
+            if raw_json.startswith("```json"):
+                raw_json = raw_json[7:]
+            if raw_json.startswith("```"):
+                raw_json = raw_json[3:]
+            if raw_json.endswith("```"):
+                raw_json = raw_json[:-3]
+            raw_json = raw_json.strip()
+            
+            quotation = VendorQuotation.model_validate_json(raw_json)
             
             return ExtractionResult(
                 success=True,
@@ -90,14 +101,17 @@ class DocumentExtractor:
             )
             
         except Exception as e:
-            print(f"Extraction failed: {str(e)}")
+            error_msg = str(e)
+            print(f"Extraction failed: {error_msg}")
+            if hasattr(e, 'text'):
+                print(f"Raw response was: {e.text}")
                 
-        return ExtractionResult(
-            success=False,
-            error=f"Failed to extract valid data after {settings.MAX_EXTRACTION_RETRIES} attempts.",
-            retries_used=settings.MAX_EXTRACTION_RETRIES,
-            source_file=pdf_path
-        )
+            return ExtractionResult(
+                success=False,
+                error=f"Extraction failed: {error_msg}",
+                retries_used=settings.MAX_EXTRACTION_RETRIES,
+                source_file=pdf_path
+            )
 
 
 # Singleton
