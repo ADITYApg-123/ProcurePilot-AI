@@ -18,14 +18,14 @@ export default function HelpCenter() {
           </div>
         </div>
         <div className="header-actions" style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+          <Link href="/about" style={{ textDecoration: 'none' }}>
+            <button className="btn-secondary" style={{ background: 'transparent', border: 'none', boxShadow: 'none', color: 'var(--text-secondary)' }}>About</button>
+          </Link>
           <Link href="/help" style={{ textDecoration: 'none' }}>
             <button className="btn-secondary" style={{ background: 'transparent', border: 'none', boxShadow: 'none', color: 'var(--text-primary)', fontWeight: 600 }}>Help</button>
           </Link>
           <Link href="/faq" style={{ textDecoration: 'none' }}>
             <button className="btn-secondary" style={{ background: 'transparent', border: 'none', boxShadow: 'none', color: 'var(--text-secondary)' }}>FAQ</button>
-          </Link>
-          <Link href="/about" style={{ textDecoration: 'none' }}>
-            <button className="btn-secondary" style={{ background: 'transparent', border: 'none', boxShadow: 'none', color: 'var(--text-secondary)' }}>About</button>
           </Link>
           <Link href="/" style={{ textDecoration: 'none' }}>
             <button className="btn-secondary" style={{ marginLeft: '16px' }}>

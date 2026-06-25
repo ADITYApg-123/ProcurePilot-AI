@@ -18,14 +18,14 @@ export default function AboutCenter() {
           </div>
         </div>
         <div className="header-actions" style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+          <Link href="/about" style={{ textDecoration: 'none' }}>
+            <button className="btn-secondary" style={{ background: 'transparent', border: 'none', boxShadow: 'none', color: 'var(--text-primary)', fontWeight: 600 }}>About</button>
+          </Link>
           <Link href="/help" style={{ textDecoration: 'none' }}>
             <button className="btn-secondary" style={{ background: 'transparent', border: 'none', boxShadow: 'none', color: 'var(--text-secondary)' }}>Help</button>
           </Link>
           <Link href="/faq" style={{ textDecoration: 'none' }}>
             <button className="btn-secondary" style={{ background: 'transparent', border: 'none', boxShadow: 'none', color: 'var(--text-secondary)' }}>FAQ</button>
-          </Link>
-          <Link href="/about" style={{ textDecoration: 'none' }}>
-            <button className="btn-secondary" style={{ background: 'transparent', border: 'none', boxShadow: 'none', color: 'var(--text-primary)', fontWeight: 600 }}>About</button>
           </Link>
           <Link href="/" style={{ textDecoration: 'none' }}>
             <button className="btn-secondary" style={{ marginLeft: '16px' }}>
@@ -39,8 +39,16 @@ export default function AboutCenter() {
         <section className="help-content">
           <div className="content-card animate-fade-in">
             <h2>About ProcurePilot</h2>
-            <p>Procurement is currently stuck in the dark ages of manual data entry, endless Excel spreadsheets, and missing crucial contract clauses.</p>
-            <p><strong>ProcurePilot</strong> was built to transform this process into an autonomous, intelligent command center. By combining state-of-the-art LLM extraction with rigorous deterministic scoring engines, we allow procurement teams to compare vendors, assess enterprise risk, and model negotiation strategies in seconds rather than weeks.</p>
+            
+            <div className="guide-section">
+              <h3>What it is:</h3>
+              <p>ProcurePilot is an AI-powered, deterministic procurement copilot. It allows teams to upload raw vendor quotation PDFs, automatically extracts the complex unstructured data, and uses a pure mathematical rules engine to instantly score and rank vendors based on cost, delivery, warranty, and contract risk.</p>
+            </div>
+
+            <div className="guide-section">
+              <h3>Why we built it:</h3>
+              <p>Procurement is currently stuck in the dark ages of manual data entry, endless Excel spreadsheets, and missing crucial contract clauses. By combining state-of-the-art LLM extraction with rigorous deterministic scoring engines, we allow procurement teams to compare vendors, assess enterprise risk, and model negotiation strategies in seconds rather than weeks.</p>
+            </div>
             
             <div className="team-box" style={{ marginTop: '32px', padding: '24px', background: 'var(--surface-color)', border: '1px dashed var(--accent-primary)', borderRadius: '12px' }}>
               <h4>Hackathon Team</h4>
