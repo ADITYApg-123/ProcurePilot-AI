@@ -217,20 +217,22 @@ export function CopilotChat({ jobId, analysis, originalAnalysis, onSimulate, onR
                 <option key={v.vendor_name} value={v.vendor_name}>{v.vendor_name}</option>
               ))}
             </select>
-            <div className="discount-input-wrapper">
-              <span className="minus-sign">-</span>
-              <input 
-                type="number" 
-                value={simDiscount} 
-                onChange={e => setSimDiscount(Number(e.target.value))}
-                min="1" max="50"
-                className="sim-input"
-              />
-              <span className="percent-sign">%</span>
+            <div className="sim-actions" style={{ display: 'flex', gap: '12px' }}>
+              <div className="discount-input-wrapper">
+                <span className="minus-sign">-</span>
+                <input 
+                  type="number" 
+                  value={simDiscount} 
+                  onChange={e => setSimDiscount(Number(e.target.value))}
+                  min="1" max="50"
+                  className="sim-input"
+                />
+                <span className="percent-sign">%</span>
+              </div>
+              <button className="btn-simulate" onClick={handleRunSimulation} disabled={isTyping} style={{ flex: 1 }}>
+                Simulate
+              </button>
             </div>
-            <button className="btn-simulate" onClick={handleRunSimulation} disabled={isTyping}>
-              Simulate
-            </button>
           </div>
         </div>
 
@@ -253,8 +255,9 @@ export function CopilotChat({ jobId, analysis, originalAnalysis, onSimulate, onR
         {isTyping && (
           <div className="message-wrapper assistant">
             <div className="message-avatar"><Bot size={20} /></div>
-            <div className="message-content typing-indicator">
-              <span></span><span></span><span></span>
+            <div className="message-content typing-indicator skeleton-container">
+              <div className="skeleton-line long"></div>
+              <div className="skeleton-line short"></div>
             </div>
           </div>
         )}

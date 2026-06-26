@@ -101,7 +101,13 @@ class DocumentExtractor:
             )
             
         except Exception as e:
-            error_msg = str(e)
+            from tenacity import RetryError
+            if isinstance(e, RetryError):
+                inner_e = e.last_attempt.exception()
+                error_msg = str(inner_e)
+            else:
+                error_msg = str(e)
+                
             print(f"Extraction failed: {error_msg}")
             if hasattr(e, 'text'):
                 print(f"Raw response was: {e.text}")

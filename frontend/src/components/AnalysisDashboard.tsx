@@ -144,117 +144,83 @@ export function AnalysisDashboard({ jobId, analysis }: Props) {
     ? Math.max(...displayAnalysis.savings_opportunities.map(s => s.savings_amount))
     : 0;
 
+  const lowestCost = Math.min(...Object.values(displayAnalysis.cost_comparison));
+  const highestWarranty = Math.max(...Object.values(displayAnalysis.warranty_comparison));
+
   return (
-    <div className="dashboard-container animate-fade-in">
+    <div className="dashboard-container clean-dashboard animate-fade-in">
       
-      {/* Recommended Vendor Hero */}
-      <Card className="hero-card tour-step-winner">
-        <div className="hero-content">
+      {/* Top Section: Executive Header (Hero + Insights) */}
+      <div className="executive-header">
+        <div className="executive-hero tour-step-winner">
           <div className="hero-icon">
             <Trophy size={48} />
           </div>
           <div className="hero-text">
-            <h2>Recommended: {displayAnalysis.recommended_vendor}</h2>
+            <h2>Recommended: <strong>{displayAnalysis.recommended_vendor}</strong></h2>
             <p>{displayAnalysis.recommendation_reason}</p>
-          </div>
-        </div>
-        <button 
-          className="btn-primary" 
-          style={{ marginTop: '20px' }}
-          onClick={handleDownload}
-          disabled={isDownloading}
-        >
-          <Download size={18} />
-          {isDownloading ? 'Generating...' : 'Download Executive PDF Report'}
-        </button>
-      </Card>
-
-      {/* What-If Scenario Engine */}
-      <Card className="scenario-engine-card tour-step-sliders">
-        <div className="scenario-header">
-          <Sliders size={24} className="text-accent" />
-          <div>
-            <h3>⚡ What-If Scenario Engine</h3>
-            <p>Adjust priorities and watch vendor rankings recalculate in real-time. Zero AI — pure deterministic math.</p>
+            <button 
+              className="btn-text-action" 
+              onClick={handleDownload}
+              disabled={isDownloading}
+            >
+              <Download size={16} />
+              {isDownloading ? 'Generating...' : 'Download Executive Report'}
+            </button>
           </div>
         </div>
         
-        <div className="sliders-container">
-          <div className="slider-group">
-            <div className="slider-label">
-              <span>Cost Priority</span>
-              <span>{costWeight}%</span>
+        <div className="executive-insights tour-step-badges">
+          <div className="clean-insight">
+            <div className="insight-icon bg-success-light">
+              <TrendingDown size={20} className="text-success" />
             </div>
-            <input 
-              type="range" 
-              min="0" max="100" 
-              value={costWeight} 
-              onChange={(e) => setCostWeight(Number(e.target.value))}
-              className="scenario-slider"
-            />
+            <div className="insight-text">
+              <p>Potential Savings</p>
+              <h4>{maxSavings > 0 ? `₹${maxSavings.toLocaleString()}` : 'Optimized'}</h4>
+            </div>
           </div>
-          
-          <div className="slider-group">
-            <div className="slider-label">
-              <span>Warranty Priority</span>
-              <span>{warrantyWeight}%</span>
+          <div className="clean-insight">
+            <div className={`insight-icon ${overallRisk === 'HIGH' ? 'bg-error-light' : overallRisk === 'MEDIUM' ? 'bg-warning-light' : 'bg-success-light'}`}>
+              <ShieldAlert size={20} className={overallRisk === 'HIGH' ? 'text-error' : overallRisk === 'MEDIUM' ? 'text-warning' : 'text-success'} />
             </div>
-            <input 
-              type="range" 
-              min="0" max="100" 
-              value={warrantyWeight} 
-              onChange={(e) => setWarrantyWeight(Number(e.target.value))}
-              className="scenario-slider"
-            />
+            <div className="insight-text">
+              <p>Risk Profile</p>
+              <h4>{overallRisk}</h4>
+            </div>
           </div>
-          
-          <div className="slider-group">
-            <div className="slider-label">
-              <span>Delivery Priority</span>
-              <span>{deliveryWeight}%</span>
+          <div className="clean-insight">
+            <div className="insight-icon bg-info-light">
+              <CheckCircle size={20} className="text-accent" />
             </div>
-            <input 
-              type="range" 
-              min="0" max="100" 
-              value={deliveryWeight} 
-              onChange={(e) => setDeliveryWeight(Number(e.target.value))}
-              className="scenario-slider"
-            />
+            <div className="insight-text">
+              <p>Math Confidence</p>
+              <h4>100% Deterministic</h4>
+            </div>
           </div>
         </div>
-      </Card>
+      </div>
 
-      {/* Insights Row */}
-      <div className="insights-row animate-fade-in tour-step-badges">
-        <Card className="insight-card">
-          <div className="insight-icon bg-success-light">
-            <TrendingDown size={24} className="text-success" />
+      {/* Middle Section: Scenario Control Bar */}
+      <div className="control-bar tour-step-sliders">
+        <div className="control-bar-header">
+          <Sliders size={20} className="text-accent" />
+          <span><strong>What-If Scenario Engine:</strong> Adjust priorities to recalculate vendor rankings instantly.</span>
+        </div>
+        <div className="control-bar-sliders">
+          <div className="compact-slider">
+            <div className="slider-label">Cost <span>{costWeight}%</span></div>
+            <input type="range" min="0" max="100" value={costWeight} onChange={(e) => setCostWeight(Number(e.target.value))} />
           </div>
-          <div>
-            <p className="insight-label">Potential Savings</p>
-            <h4 className="insight-value">{maxSavings > 0 ? `₹${maxSavings.toLocaleString()}` : 'Optimized'}</h4>
+          <div className="compact-slider">
+            <div className="slider-label">Warranty <span>{warrantyWeight}%</span></div>
+            <input type="range" min="0" max="100" value={warrantyWeight} onChange={(e) => setWarrantyWeight(Number(e.target.value))} />
           </div>
-        </Card>
-        
-        <Card className="insight-card">
-          <div className={`insight-icon ${overallRisk === 'HIGH' ? 'bg-error-light' : overallRisk === 'MEDIUM' ? 'bg-warning-light' : 'bg-success-light'}`}>
-            <ShieldAlert size={24} className={overallRisk === 'HIGH' ? 'text-error' : overallRisk === 'MEDIUM' ? 'text-warning' : 'text-success'} />
+          <div className="compact-slider">
+            <div className="slider-label">Delivery <span>{deliveryWeight}%</span></div>
+            <input type="range" min="0" max="100" value={deliveryWeight} onChange={(e) => setDeliveryWeight(Number(e.target.value))} />
           </div>
-          <div>
-            <p className="insight-label">Overall Risk Profile</p>
-            <h4 className="insight-value">{overallRisk}</h4>
-          </div>
-        </Card>
-
-        <Card className="insight-card">
-          <div className="insight-icon bg-info-light">
-            <CheckCircle size={24} className="text-accent" />
-          </div>
-          <div>
-            <p className="insight-label">Math Confidence</p>
-            <h4 className="insight-value">100% Deterministic</h4>
-          </div>
-        </Card>
+        </div>
       </div>
 
       <div className="dashboard-grid">
@@ -287,25 +253,29 @@ export function AnalysisDashboard({ jobId, analysis }: Props) {
                     ))}
                   </tr>
                   <tr>
-                    <td><strong>Total Cost</strong></td>
+                    <td><strong className="row-header">Total Cost</strong></td>
                     {displayAnalysis.vendor_scores.map(score => {
-                      const costConf = displayAnalysis.confidence_scores?.[score.vendor_name]?.grand_total ?? 100;
+                      const costValue = displayAnalysis.cost_comparison[score.vendor_name];
+                      const isLowest = costValue === lowestCost;
                       return (
                         <td key={score.vendor_name} className={score.vendor_name === displayAnalysis.recommended_vendor ? 'highlight-col tour-step-confidence' : ''}>
-                          ₹{displayAnalysis.cost_comparison[score.vendor_name].toLocaleString()}
-                          <ConfidenceBar score={costConf} />
+                          <span className={`data-pill ${isLowest ? 'winner' : 'default'}`}>
+                            ₹{costValue.toLocaleString()}
+                          </span>
                         </td>
                       );
                     })}
                   </tr>
                   <tr>
-                    <td><strong>Warranty</strong></td>
+                    <td><strong className="row-header">Warranty</strong></td>
                     {displayAnalysis.vendor_scores.map(score => {
-                      const warrantyConf = displayAnalysis.confidence_scores?.[score.vendor_name]?.warranty_months ?? 100;
+                      const warrantyValue = displayAnalysis.warranty_comparison[score.vendor_name];
+                      const isHighest = warrantyValue === highestWarranty;
                       return (
                         <td key={score.vendor_name} className={score.vendor_name === displayAnalysis.recommended_vendor ? 'highlight-col tour-step-confidence' : ''}>
-                          {displayAnalysis.warranty_comparison[score.vendor_name]} Months
-                          <ConfidenceBar score={warrantyConf} />
+                          <span className={`data-pill ${isHighest ? 'winner' : 'default'}`}>
+                            {warrantyValue} Months
+                          </span>
                         </td>
                       );
                     })}
@@ -443,7 +413,7 @@ export function AnalysisDashboard({ jobId, analysis }: Props) {
                                   {riskIcon(clause.risk_level)} {clause.risk_level}
                                 </span>
                                 <span className="clause-value">{clause.extracted_value}</span>
-                                {clause.note && <span className="clause-note">{clause.note}</span>}
+                                {clause.note && <p className="clause-note" title={clause.note}>{clause.note}</p>}
                               </div>
                             </td>
                           );

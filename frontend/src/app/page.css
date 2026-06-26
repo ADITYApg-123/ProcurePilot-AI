@@ -3,6 +3,7 @@
   display: grid;
   grid-template-columns: minmax(32px, 1fr) minmax(0, 1400px) minmax(32px, 1fr);
   grid-template-rows: auto 1fr;
+  background-color: #f1f5f9;
 }
 
 .app-main::before {
@@ -107,21 +108,56 @@
   background: #eff6ff; /* blue-50 */
 }
 
+.nav-link {
+  background: transparent;
+  border: none;
+  font-family: inherit;
+  font-weight: 600;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+
+.nav-link:hover {
+  color: var(--accent-primary);
+  text-shadow: 0 0 8px var(--accent-glow);
+}
+
 .content-wrapper {
   grid-column: 2;
-  padding: 40px 0;
-  margin-top: 20px;
+  padding: 20px 0 40px 0;
 }
 
 .results-view {
-  display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
-  gap: 30px;
-  align-items: start;
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+  min-height: calc(100vh - 140px);
+}
+
+.main-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.sidebar-content {
+  width: 380px; /* Roughly 25-30% on standard screens */
+  flex-shrink: 0;
+  position: sticky;
+  top: 100px;
+  height: calc(100vh - 120px);
+  display: flex;
+  flex-direction: column;
 }
 
 @media (max-width: 1200px) {
   .results-view {
-    grid-template-columns: 1fr;
+    flex-direction: column;
+  }
+  .sidebar-content {
+    width: 100%;
+    position: static;
+    height: auto;
   }
 }
