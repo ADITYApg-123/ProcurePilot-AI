@@ -24,21 +24,21 @@
 }
 
 .badge-success {
-  background: rgba(16, 185, 129, 0.1);
-  color: var(--success);
-  border: 1px solid rgba(16, 185, 129, 0.2);
+  background: rgba(5, 150, 105, 0.08); /* highly diluted emerald */
+  color: #047857; /* saturated emerald */
+  border: 1px solid rgba(5, 150, 105, 0.1);
 }
 
 .badge-warning {
-  background: rgba(245, 158, 11, 0.1);
-  color: var(--warning);
-  border: 1px solid rgba(245, 158, 11, 0.2);
+  background: rgba(217, 119, 6, 0.08); /* highly diluted amber */
+  color: #b45309; /* saturated amber */
+  border: 1px solid rgba(217, 119, 6, 0.1);
 }
 
 .badge-error {
-  background: rgba(239, 68, 68, 0.1);
-  color: var(--error);
-  border: 1px solid rgba(239, 68, 68, 0.2);
+  background: rgba(220, 38, 38, 0.08); /* highly diluted crimson */
+  color: #b91c1c; /* saturated crimson */
+  border: 1px solid rgba(220, 38, 38, 0.1);
 }
 
 .spinner-circle {
@@ -57,18 +57,18 @@
 }
 
 .confidence-track {
-  height: 6px;
-  background: #f1f5f9;
-  border-radius: 4px;
+  height: 6px; /* slightly thicker */
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 9999px; /* fully rounded */
   flex-grow: 1;
-  overflow: hidden;
+  overflow: visible;
   max-width: 80px;
 }
 
 .confidence-fill {
   height: 100%;
-  border-radius: 4px;
-  transition: width 0.3s ease, background-color 0.3s ease;
+  border-radius: 9999px; /* fully rounded */
+  transition: width 0.3s ease, background 0.3s ease;
 }
 
 .confidence-text {

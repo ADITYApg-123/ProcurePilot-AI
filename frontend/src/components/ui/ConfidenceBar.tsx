@@ -28,7 +28,8 @@ export function ConfidenceBar({ score }: ConfidenceBarProps) {
           className="confidence-fill" 
           style={{ 
             width: `${Math.max(0, Math.min(100, score))}%`, 
-            backgroundColor: color 
+            background: `linear-gradient(90deg, rgba(255,255,255,0.4), ${color})`,
+            boxShadow: `0 0 8px ${color}`
           }} 
         />
       </div>
