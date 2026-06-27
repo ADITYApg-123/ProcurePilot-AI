@@ -50,12 +50,6 @@ export default function AboutCenter() {
               <p>Procurement is currently stuck in the dark ages of manual data entry, endless Excel spreadsheets, and missing crucial contract clauses. By combining state-of-the-art LLM extraction with rigorous deterministic scoring engines, we allow procurement teams to compare vendors, assess enterprise risk, and model negotiation strategies in seconds rather than weeks.</p>
             </div>
 
-            <div className="team-box" style={{ marginTop: '32px', padding: '24px', background: 'var(--surface-color)', border: '1px dashed var(--accent-primary)', borderRadius: '12px' }}>
-              <h4>Hackathon Team</h4>
-              <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginTop: '8px' }}>
-                [Placeholder: Add your team names and roles here. Explain why you are passionate about solving procurement inefficiencies!]
-              </p>
-            </div>
           </div>
         </section>
       </div>
