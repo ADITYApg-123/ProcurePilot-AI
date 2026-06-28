@@ -46,6 +46,8 @@ class DocumentExtractor:
         If a field is missing in the document, leave it empty or null (do not guess).
         Pay special attention to the pricing, tax, warranty, and delivery terms.
 
+        CRITICAL: Keep all extracted text fields (like special_conditions, warranty_terms, delivery_terms) extremely concise. Summarize them in 1-2 sentences. DO NOT copy-paste entire pages of terms and conditions into the JSON.
+
         CRITICAL: For every field you extract, you MUST provide a confidence score (0-100) in the `confidence_scores` dictionary. 100 means you found it explicitly in the text, 50 means it was ambiguous or inferred, 0 means missing.
 
         ALSO CRITICAL — extract the `contract_clauses` object with all 4 sub-fields:
@@ -75,6 +77,7 @@ class DocumentExtractor:
                     response_mime_type="application/json",
                     response_schema=VendorQuotation,
                     temperature=0.1,
+                    max_output_tokens=8192,
                 ),
             )
 
