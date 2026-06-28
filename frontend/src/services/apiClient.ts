@@ -18,7 +18,12 @@ export const apiClient = {
     });
 
     if (!response.ok) {
-      throw new Error('Failed to upload files');
+      let errorMsg = 'Failed to upload files';
+      try {
+        const errorData = await response.json();
+        if (errorData.detail) errorMsg = errorData.detail;
+      } catch (e) {}
+      throw new Error(errorMsg);
     }
 
     return response.json();

@@ -19,8 +19,6 @@ async def upload_quotations(files: list[UploadFile] = File(...)):
     Returns a job_id to track the analysis progress.
     """
     # Validate files
-    if len(files) < 2:
-        raise HTTPException(status_code=400, detail="Please upload at least 2 vendor quotations.")
     if len(files) > 5:
         raise HTTPException(status_code=400, detail="Maximum 5 quotations allowed.")
 
