@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { Hexagon, ArrowLeft } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import '../help/page.css';
 import '../page.css'; // inherit header styles
@@ -10,26 +10,27 @@ export default function AboutCenter() {
   return (
     <main className="app-main help-main">
       <header className="app-header">
-        <div className="header-brand">
-          <Hexagon size={28} className="brand-icon" />
-          <div className="brand-text">
-            <h1>ProcurePilot <span>AI</span></h1>
-            <span className="brand-tagline">Autonomous Procurement Intelligence</span>
+        <Link href="/" style={{ textDecoration: 'none' }}>
+          <div className="logo-container" style={{ cursor: 'pointer' }} title="Return to Home">
+            <div className="logo-mark"></div>
+            <h1>ProcurePilot</h1>
           </div>
-        </div>
-        <div className="header-actions" style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+        </Link>
+        <div className="header-actions" style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
           <Link href="/about" style={{ textDecoration: 'none' }}>
-            <button className="btn-secondary" style={{ background: 'transparent', border: 'none', boxShadow: 'none', color: 'var(--text-primary)', fontWeight: 600 }}>About</button>
+            <button className="nav-link" style={{ fontWeight: 700, color: 'var(--text-primary)' }}>About</button>
           </Link>
+          <span style={{ color: 'var(--border-color)', userSelect: 'none' }}>|</span>
           <Link href="/help" style={{ textDecoration: 'none' }}>
-            <button className="btn-secondary" style={{ background: 'transparent', border: 'none', boxShadow: 'none', color: 'var(--text-secondary)' }}>Help</button>
+            <button className="nav-link">Help</button>
           </Link>
+          <span style={{ color: 'var(--border-color)', userSelect: 'none' }}>|</span>
           <Link href="/faq" style={{ textDecoration: 'none' }}>
-            <button className="btn-secondary" style={{ background: 'transparent', border: 'none', boxShadow: 'none', color: 'var(--text-secondary)' }}>FAQ</button>
+            <button className="nav-link">FAQ</button>
           </Link>
           <Link href="/" style={{ textDecoration: 'none' }}>
-            <button className="btn-secondary" style={{ marginLeft: '16px' }}>
-              <ArrowLeft size={16} /> Back to Dashboard
+            <button className="header-back-btn">
+              ← Back to Dashboard
             </button>
           </Link>
         </div>

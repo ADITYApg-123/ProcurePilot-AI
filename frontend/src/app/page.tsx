@@ -122,13 +122,15 @@ export default function Home() {
           <div className="logo-mark"></div>
           <h1>ProcurePilot</h1>
         </div>
-        <div className="header-actions" style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+        <div className="header-actions" style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
           <Link href="/about" style={{ textDecoration: 'none' }}>
             <button className="nav-link">About</button>
           </Link>
+          <span style={{ color: 'var(--border-color)', userSelect: 'none' }}>|</span>
           <Link href="/help" style={{ textDecoration: 'none' }}>
             <button className="nav-link">Help</button>
           </Link>
+          <span style={{ color: 'var(--border-color)', userSelect: 'none' }}>|</span>
           <Link href="/faq" style={{ textDecoration: 'none' }}>
             <button className="nav-link">FAQ</button>
           </Link>
