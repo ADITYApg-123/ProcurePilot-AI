@@ -118,14 +118,14 @@ export function UploadWorkspace({ onUpload, onLoadDemo, isUploading, jobStatus, 
 
 
       <div className="upload-header">
-        <h2>100% Deterministic Procurement</h2>
-        <p className="hero-tagline">Analyze vendor quotes with auditable financial math. Zero AI calculation hallucinations.</p>
+        <h2>Auditable Vendor Evaluation</h2>
+        <p className="hero-tagline">Extract unstructured quote data using AI, then score and rank vendors using a pure, deterministic math engine. Built for absolute financial accuracy.</p>
       </div>
 
       {onLoadDemo && (
         <div className="demo-section animate-fade-in">
           <button className="btn-demo" onClick={onLoadDemo} disabled={isUploading}>
-            <span className="fire-icon">🔥</span> Try Instant Demo (Load Pre-analyzed Sample Data)
+            View Interactive Demo (Load Pre-analyzed Sample Data)
           </button>
           <div className="demo-divider">
             <span>OR UPLOAD YOUR OWN PDFs</span>
@@ -142,8 +142,8 @@ export function UploadWorkspace({ onUpload, onLoadDemo, isUploading, jobStatus, 
         onClick={() => fileInputRef.current?.click()}
       >
         <UploadCloud className="upload-icon" size={48} />
-        <h3>Drag & Drop Quotations Here</h3>
-        <p>or click to browse from your computer</p>
+        <h3>Drop Vendor PDFs Here</h3>
+        <p>Upload RFP responses, quotes, or contracts (PDF)</p>
         <input 
           type="file" 
           multiple 
