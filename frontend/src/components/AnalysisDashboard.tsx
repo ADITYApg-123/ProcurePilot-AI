@@ -96,13 +96,93 @@ function inferClauseAnalysis(analysis: ProcurementAnalysis): Record<string, Vend
   return result;
 }
 
+/**
+ * Dynamically calculates starting slider weights based on data variance across vendors.
+ * Uses Coefficient of Variation (CV) to determine which metrics have the largest spread.
+ */
+function calculateDynamicWeights(analysis: ProcurementAnalysis) {
+  const getCV = (values: number[]) => {
+    if (values.length === 0) return 0;
+    const mean = values.reduce((a, b) => a + b, 0) / values.length;
+    if (mean === 0) return 0;
+    const variance = values.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / values.length;
+    return Math.sqrt(variance) / mean;
+  };
+
+  const costs = Object.values(analysis.cost_comparison);
+  const warranties = Object.values(analysis.warranty_comparison);
+  const deliveries = Object.values(analysis.delivery_comparison);
+
+  const cvCost = getCV(costs);
+  const cvWarranty = getCV(warranties);
+  const cvDelivery = getCV(deliveries);
+
+  const totalCV = cvCost + cvWarranty + cvDelivery;
+
+  // Fallback to defaults if variance is zero across the board
+  if (totalCV === 0) {
+    return { cost: 50, warranty: 20, delivery: 30, primaryDifferentiator: null };
+  }
+
+  let rawCost = (cvCost / totalCV) * 100;
+  let rawWarranty = (cvWarranty / totalCV) * 100;
+  let rawDelivery = (cvDelivery / totalCV) * 100;
+
+  // Apply enterprise guardrails
+  // Rule 1: Cost must be at least 35%
+  if (rawCost < 35) {
+    const deficit = 35 - rawCost;
+    rawCost = 35;
+    const otherTotal = rawWarranty + rawDelivery;
+    if (otherTotal > 0) {
+      rawWarranty -= deficit * (rawWarranty / otherTotal);
+      rawDelivery -= deficit * (rawDelivery / otherTotal);
+    }
+  }
+
+  // Rule 2: No single weight below 10%
+  const ensureMin = (val: number, other1: number, other2: number): [number, number, number] => {
+    if (val < 10) {
+      const deficit = 10 - val;
+      val = 10;
+      const otherTotal = other1 + other2;
+      if (otherTotal > 0) {
+        other1 -= deficit * (other1 / otherTotal);
+        other2 -= deficit * (other2 / otherTotal);
+      }
+    }
+    return [val, other1, other2];
+  };
+
+  let rw = rawWarranty, rc = rawCost, rd = rawDelivery;
+  [rw, rc, rd] = ensureMin(rw, rc, rd);
+  [rd, rc, rw] = ensureMin(rd, rc, rw);
+
+  const finalCost = Math.round(rc);
+  const finalWarranty = Math.round(rw);
+  const finalDelivery = 100 - finalCost - finalWarranty;
+
+  let differentiator = null;
+  if (cvDelivery > cvCost && cvDelivery > cvWarranty) differentiator = 'Delivery Times';
+  else if (cvWarranty > cvCost && cvWarranty > cvDelivery) differentiator = 'Warranty Lengths';
+  else if (cvCost > cvDelivery && cvCost > cvWarranty) differentiator = 'Cost Variations';
+
+  return { 
+    cost: finalCost, 
+    warranty: finalWarranty, 
+    delivery: finalDelivery, 
+    primaryDifferentiator: differentiator 
+  };
+}
+
 export function AnalysisDashboard({ jobId, analysis }: Props) {
   const [isDownloading, setIsDownloading] = React.useState(false);
 
-  // What-If Scenario Engine State
-  const [costWeight, setCostWeight] = React.useState(50);
-  const [warrantyWeight, setWarrantyWeight] = React.useState(20);
-  const [deliveryWeight, setDeliveryWeight] = React.useState(30);
+  // What-If Scenario Engine State (Dynamically Calibrated)
+  const [initialWeights] = React.useState(() => calculateDynamicWeights(analysis));
+  const [costWeight, setCostWeight] = React.useState(initialWeights.cost);
+  const [warrantyWeight, setWarrantyWeight] = React.useState(initialWeights.warranty);
+  const [deliveryWeight, setDeliveryWeight] = React.useState(initialWeights.delivery);
   const [displayAnalysis, setDisplayAnalysis] = React.useState(analysis);
 
   React.useEffect(() => {
@@ -203,9 +283,17 @@ export function AnalysisDashboard({ jobId, analysis }: Props) {
 
       {/* Middle Section: Scenario Control Bar */}
       <div className="control-bar tour-step-sliders">
-        <div className="control-bar-header">
-          <Sliders size={20} className="text-accent" />
-          <span><strong>What-If Scenario Engine:</strong> Adjust priorities to recalculate vendor rankings instantly.</span>
+        <div className="control-bar-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Sliders size={20} className="text-accent" />
+            <span><strong>What-If Scenario Engine:</strong> Adjust priorities to recalculate vendor rankings instantly.</span>
+          </div>
+          {initialWeights.primaryDifferentiator && (
+            <div className="dynamic-weight-badge animate-fade-in" style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', background: 'var(--bg-color)', border: '1px solid var(--border-color)', padding: '6px 12px', borderRadius: '100px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <Zap size={14} className="text-warning" /> 
+              Weights auto-calibrated for high variance in {initialWeights.primaryDifferentiator}.
+            </div>
+          )}
         </div>
         <div className="control-bar-sliders">
           <div className="compact-slider">
