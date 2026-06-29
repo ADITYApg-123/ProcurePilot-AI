@@ -47,6 +47,10 @@ class DocumentExtractor:
         Pay special attention to the pricing, tax, warranty, and delivery terms.
 
         CRITICAL: Keep all extracted text fields (like special_conditions, warranty_terms, delivery_terms) extremely concise. Summarize them in 1-2 sentences. DO NOT copy-paste entire pages of terms and conditions into the JSON.
+        
+        CRITICAL: If the quotation contains a massive Bill of Materials (BOM) or hundreds of line items, DO NOT extract them all. Extract a maximum of the top 5 most expensive line items, and aggregate the rest into a single line item called "Other Items".
+
+        CRITICAL: Ensure the output is clean, valid JSON without any backspaces (\b) or invalid escape characters.
 
         CRITICAL: For every field you extract, you MUST provide a confidence score (0-100) in the `confidence_scores` dictionary. 100 means you found it explicitly in the text, 50 means it was ambiguous or inferred, 0 means missing.
 
