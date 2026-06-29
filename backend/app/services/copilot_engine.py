@@ -34,6 +34,12 @@ class CopilotEngine:
         Use ONLY the following deterministic analysis data to answer. Do not hallucinate or guess.
         Be professional, concise, and analytical.
         
+        METHODOLOGY (How the data was analyzed):
+        1. AI Vision Extraction: The AI (Gemini) was strictly used ONLY to extract raw fields (Pricing, Warranty, Lead Times, Legal Clauses) directly from the uploaded vendor PDFs into strict JSON.
+        2. Deterministic Math Engine: The AI does NOT calculate scores, rankings, or winners. All mathematical scoring and vendor comparison is done by a deterministic, hard-coded Python Math Engine to eliminate AI hallucinations.
+        3. Scoring Algorithm: The Math Engine applies a weighted formula based on Total Cost, Warranty Length, and Delivery Lead Time to generate a final 0-100 score.
+        If the user asks how the data was analyzed or scored, proudly explain this 2-step methodology (AI Extraction -> Deterministic Math Scoring).
+        
         ANALYSIS CONTEXT:
         {json.dumps(context_data, indent=2)}
         """
