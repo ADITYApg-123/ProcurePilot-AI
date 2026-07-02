@@ -19,14 +19,8 @@ class CopilotEngine:
         """
         Handle a general Q&A chat message grounded in the analysis data.
         """
-        # Convert analysis to a concise string context to avoid token bloat
-        context_data = {
-            "recommended_vendor": analysis.recommended_vendor,
-            "recommendation_reason": analysis.recommendation_reason,
-            "vendor_scores": [s.model_dump() for s in analysis.vendor_scores],
-            "risk_flags": [r.model_dump() for r in analysis.risk_flags],
-            "savings_opportunities": [s.model_dump() for s in analysis.savings_opportunities]
-        }
+        # Provide the FULL analysis object to the Copilot so it can see raw costs and warranties
+        context_data = analysis.model_dump()
         
         system_prompt = f"""
         You are ProcurePilot, an expert AI procurement copilot.
@@ -37,8 +31,15 @@ class CopilotEngine:
         METHODOLOGY (How the data was analyzed):
         1. AI Vision Extraction: The AI (Gemini) was strictly used ONLY to extract raw fields (Pricing, Warranty, Lead Times, Legal Clauses) directly from the uploaded vendor PDFs into strict JSON.
         2. Deterministic Math Engine: The AI does NOT calculate scores, rankings, or winners. All mathematical scoring and vendor comparison is done by a deterministic, hard-coded Python Math Engine to eliminate AI hallucinations.
-        3. Scoring Algorithm: The Math Engine applies a weighted formula based on Total Cost, Warranty Length, and Delivery Lead Time to generate a final 0-100 score.
-        If the user asks how the data was analyzed or scored, proudly explain this 2-step methodology (AI Extraction -> Deterministic Math Scoring).
+        
+        SCORING METHODOLOGY (The Exact Math Used):
+        The overall score (0-100) is a weighted average of three normalized sub-scores:
+        - Cost Score: 100 * (max_cost - vendor_cost) / (max_cost - min_cost)  [Lower cost gets higher score]
+        - Warranty Score: 100 * (vendor_warranty - min_warranty) / (max_warranty - min_warranty)  [Longer warranty gets higher score]
+        - Delivery Score: 100 * (max_delivery - vendor_delivery) / (max_delivery - min_delivery)  [Faster delivery gets higher score]
+        - Risk Flags are triggered if: Warranty < 12 months, Delivery > 30 days, or 100% advance payment required.
+        
+        If the user asks how the data was analyzed, scored, or "what was the math", proudly explain this exact methodology and use the raw numbers from the context to walk them through the math.
         
         ANALYSIS CONTEXT:
         {json.dumps(context_data, indent=2)}
