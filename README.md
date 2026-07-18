@@ -42,11 +42,12 @@ Built for modern B2B procurement, it solves the **biggest problem with standard 
 ### Risk & Analysis
 - 🚨 **Contract Clause Risk Matrix** — Automatically flags and categorizes risks across Force Majeure, Liquidated Damages, Liability Caps, and IP clauses with severity scoring per vendor.
 - 📈 **Vendor Comparison Matrix** — Side-by-side comparison of all vendors across every extracted metric, with the recommended vendor visually highlighted.
-- ⚖️ **Configurable Weight Sliders** — Dynamically adjust the importance of Cost, Warranty, Delivery, and Terms to instantly see how rankings shift.
+- ⚖️ **Configurable Weight Sliders** — Dynamically adjust the importance of Cost, Warranty, and Delivery to instantly see how rankings shift.
+- 🎯 **Auto-Calibrated Weights** — The engine automatically detects high variance across vendors (e.g., large warranty differences) and auto-calibrates the default weights to surface the most decisive differentiators.
 
 ### Negotiation & Reporting
-- 💰 **What-If Negotiation Simulator** — Apply percentage discounts to any vendor and instantly see how the overall rankings, scores, and savings recalculate in real-time.
-- 🤖 **Procurement Copilot** — A persistent AI sidebar to chat with your procurement data, draft negotiation strategies, and query vendor-specific details.
+- 💰 **What-If Negotiation Simulator** — A dedicated Copilot widget lets you select any vendor from a dropdown, apply a percentage discount (e.g., −10%), and click "Simulate" to instantly recalculate the entire scoring matrix and see if that vendor overtakes the competition.
+- 🤖 **Procurement Copilot** — A persistent AI sidebar to chat with your procurement data, draft negotiation strategies, and query vendor-specific details. Includes one-click Quick Actions like "Negotiate with [Vendor]" for instant leverage strategies.
 - 📄 **Executive PDF Reports** — One-click branded PDF summaries for fast management review.
 
 ---
@@ -213,7 +214,7 @@ ProcurePilot-AI/
 │   └── src/services/       # API client, types
 ├── backend/                # FastAPI server
 │   ├── app/services/       # Extraction, scoring, copilot logic
-│   ├── app/models/         # Pydantic schemas
+│   ├── app/schemas/        # Pydantic schemas
 │   └── tests/              # Pytest suite
 ├── Dockerfile              # HuggingFace Spaces deployment
 └── README.md
